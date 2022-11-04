@@ -1,3 +1,5 @@
+import XcodeParser
+
 @main
 public struct BazelGen {
     public private(set) var text = "Hello, World!"
