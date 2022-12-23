@@ -1,9 +1,14 @@
-# BazelGen
+# XcodeMigrate
 
 Generate Bazel BUILD files from Xcode projects.
 
+Long term plans:
+
+- Generate Buck files
+- Generate Xcodegen YAML files
+
 This project is still in its early stages. It is not yet ready for production use.
-If you have any questions or ideas, please feel free to [open a discussion](https://github.com/dahchon/BazelGen/discussions/new).
+If you have any questions or ideas, please feel free to [open a discussion](https://github.com/dahchon/XcodeMigrate/discussions/new).
 
 ## Goals
 
@@ -18,4 +23,4 @@ If you have any questions or ideas, please feel free to [open a discussion](http
 
 ## License
 
-BazelGen is released under the MIT license. See LICENSE for details.
+XcodeMigrate is released under the MIT license. See LICENSE for details.
