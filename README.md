@@ -10,6 +10,15 @@ Long term plans:
 This project is still in its early stages. It is not yet ready for production use.
 If you have any questions or ideas, please feel free to [open a discussion](https://github.com/dahchon/XcodeMigrate/discussions/new).
 
+## Why XcodeMigrate?
+
+Over nearly ten years of my personal experience of Apple development, I strongly believe that developers should be able to keep focused on creative things rather than wasting time on compile time.
+
+Bazel is designed for this purpose.
+
+However, migrating existing (large) Xcode project to Bazel is not easy. It requires a lot of manual work.
+`BazelMigrate` is created to help developers to migrate existing Xcode projects to Bazel with minimal manual work.
+
 ## Goals
 
 - Easy and quick setup process for most projects
