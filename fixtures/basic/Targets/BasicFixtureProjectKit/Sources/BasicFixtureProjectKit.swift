@@ -1,6 +1,6 @@
 import Foundation
 
-public final class BasicFixtureProjectKit {
+public enum BasicFixtureProjectKit {
     public static func hello() {
         print("Hello, from your Kit framework")
     }

@@ -11,8 +11,8 @@ public class XcodeParser {
 
     public init(projectPath: String) throws {
         let path = Path(projectPath)
-        self.projectRoot = path.parent()
-        self.project = try XcodeProj(path: path)
+        projectRoot = path.parent()
+        project = try XcodeProj(path: path)
     }
 
     func perform() throws {
@@ -25,16 +25,21 @@ public class XcodeParser {
             let targetPath = try! AbstractTarget.findTargetRootPath(target: target, projectRoot: projectRoot)
 
             let sourceBuildPhase = try target.sourcesBuildPhase()
-            let filePathStrings: [String]? = sourceBuildPhase?.files?.compactMap { file in
-                file.file?.path
+            let sourceFiles: [AbstractSourceFile]? = sourceBuildPhase?.files?.compactMap { file in
+                guard let fileElement = file.file else {
+                    return nil
+                }
+                guard let abstractFile = AbstractSourceFile(from: fileElement) else {
+                    return nil
+                }
+
+                return abstractFile
             }
 
-            let filePaths = (filePathStrings ?? []).map { Path($0) }
-
-            return AbstractTarget(name: name, productType: ProductType(from: productType), path: targetPath, sourceFilePaths: filePaths)
+            return AbstractTarget(name: name, productType: ProductType(from: productType), path: targetPath, sourceFile: sourceFiles ?? [])
         }
 
-        self.abstractProject = AbstractProject(targets: targets)
+        abstractProject = AbstractProject(targets: targets)
     }
 }
 

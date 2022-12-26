@@ -2,7 +2,7 @@
 //  AbstractTarget.swift
 //
 //
-//  Created by WildCat on 12/24/22.
+//  Created by Daohan Chong on 12/24/22.
 //
 
 import Foundation
@@ -11,12 +11,12 @@ public struct AbstractTarget {
     let name: String
     let productType: ProductType
     let path: Path
-    let sourceFilePaths: [Path]
+    let sourceFile: [AbstractSourceFile]
 
-    public init(name: String, productType: ProductType, path: Path, sourceFilePaths: [Path]) {
+    public init(name: String, productType: ProductType, path: Path, sourceFile: [AbstractSourceFile]) {
         self.name = name
         self.productType = productType
         self.path = path
-        self.sourceFilePaths = sourceFilePaths
+        self.sourceFile = sourceFile
     }
 }
