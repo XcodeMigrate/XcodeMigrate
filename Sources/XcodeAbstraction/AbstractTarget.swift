@@ -8,10 +8,10 @@
 import Foundation
 import PathKit
 public struct AbstractTarget {
-    let name: String
-    let productType: ProductType
-    let path: Path
-    let sourceFile: [AbstractSourceFile]
+    public let name: String
+    public let productType: ProductType
+    public let path: Path
+    public let sourceFile: [AbstractSourceFile]
 
     public init(name: String, productType: ProductType, path: Path, sourceFile: [AbstractSourceFile]) {
         self.name = name
