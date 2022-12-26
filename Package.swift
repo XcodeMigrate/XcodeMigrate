@@ -17,7 +17,8 @@ let package = Package(
                 "XcodeParser",
             ]
         ),
-        .target(name: "XcodeParser", dependencies: ["XcodeProj"]),
+        .target(name: "XcodeParser", dependencies: ["XcodeProj", "FoundationExtension"]),
+        .target(name: "FoundationExtension"),
         .testTarget(
             name: "XcodeMigrateTests",
             dependencies: ["XcodeMigrate"]
