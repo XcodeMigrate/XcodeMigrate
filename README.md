@@ -4,8 +4,8 @@ Generate Bazel BUILD files from Xcode projects. Inspired by [XCodeBazelize/Bazel
 
 Long term plans:
 
-- Generate Buck files
-- Generate Xcodegen YAML files
+- Generate [Buck2](https://github.com/facebookincubator/buck2) files
+- Generate [Xcodegen](https://github.com/yonaskolb/XcodeGen) YAML files
 
 This project is still in its early stages. It is not yet ready for production use.
 If you have any questions or ideas, please feel free to [open a discussion](https://github.com/dahchon/XcodeMigrate/discussions/new).
