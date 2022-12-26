@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  AbstractTarget.swift
 //  
 //
 //  Created by WildCat on 12/24/22.
@@ -9,7 +9,7 @@ import Foundation
 import enum XcodeProj.PBXProductType
 import PathKit
 
-struct AbstractTarget {
+public struct AbstractTarget {
     let name: String
     let productType: XcodeProj.PBXProductType
     let path: Path

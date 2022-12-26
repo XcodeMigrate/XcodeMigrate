@@ -3,26 +3,38 @@ import XcodeProj
 
 public class XcodeParser {
     let project: XcodeProj
-   
-    var targets: [AbstractTarget]?
-    
-    public init(path: String) throws {
-        project = try XcodeProj(path: Path(path))
+
+    let projectRoot: Path
+
+    var abstractProject: AbstractProject?
+
+    public init(projectPath: String) throws {
+        let path = Path(projectPath)
+        self.projectRoot = path.parent()
+        self.project = try XcodeProj(path: path)
     }
 
-    func perform() {
-        let projectDirPath = project.pbxproj.rootObject!.projectDirPath
-        
-        let targets = project.pbxproj.nativeTargets.compactMap { target in
+    func perform() throws {
+        let targets: [AbstractTarget] = try project.pbxproj.nativeTargets.compactMap { target -> AbstractTarget? in
             let name = target.name
-            let productType = target.productType
-           
-       
-            try! AbstractTarget.findTargetRootPath(target: target, projectDirPath: projectDirPath)
+            guard let productType = target.productType else {
+                return nil
+            }
+
+            let targetPath = try! AbstractTarget.findTargetRootPath(target: target, projectRoot: projectRoot)
+
+            let sourceBuildPhase = try target.sourcesBuildPhase()
+            let filePathStrings: [String]? = sourceBuildPhase?.files?.compactMap { file in
+                file.file?.path
+            }
+
+            let filePaths = (filePathStrings ?? []).map { Path($0) }
+
+            return AbstractTarget(name: name, productType: productType, path: targetPath, sourceFilePaths: filePaths)
         }
+
+        self.abstractProject = AbstractProject(targets: targets)
     }
 }
 
-private extension XcodeParser {
-    
-}
+private extension XcodeParser {}

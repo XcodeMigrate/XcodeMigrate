@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  AbstractTarget.swift
 //
 //
 //  Created by WildCat on 12/26/22.
@@ -14,7 +14,7 @@ extension AbstractTarget {
         case noneFile
     }
 
-    static func findTargetRootPath(target: PBXNativeTarget, projectDirPath: String) throws -> Path {
+    static func findTargetRootPath(target: PBXNativeTarget, projectRoot: Path) throws -> Path {
         guard let sourceFiles = try target.sourcesBuildPhase()?.files else {
             throw FindTargetRootPathError.noneFile
         }
