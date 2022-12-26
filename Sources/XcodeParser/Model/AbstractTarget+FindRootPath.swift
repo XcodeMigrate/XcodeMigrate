@@ -8,6 +8,7 @@
 import FoundationExtension
 import PathKit
 import XcodeProj
+import XcodeAbstraction
 
 extension AbstractTarget {
     enum FindTargetRootPathError: Error {

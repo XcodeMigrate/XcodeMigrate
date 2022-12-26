@@ -1,4 +1,5 @@
 import PathKit
+import XcodeAbstraction
 import XcodeProj
 
 public class XcodeParser {
@@ -30,7 +31,7 @@ public class XcodeParser {
 
             let filePaths = (filePathStrings ?? []).map { Path($0) }
 
-            return AbstractTarget(name: name, productType: productType, path: targetPath, sourceFilePaths: filePaths)
+            return AbstractTarget(name: name, productType: ProductType(from: productType), path: targetPath, sourceFilePaths: filePaths)
         }
 
         self.abstractProject = AbstractProject(targets: targets)
