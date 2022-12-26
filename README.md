@@ -1,6 +1,6 @@
 # XcodeMigrate
 
-Generate Bazel BUILD files from Xcode projects.
+Generate Bazel BUILD files from Xcode projects. Inspired by [XCodeBazelize/Bazelize](https://github.com/XCodeBazelize/Bazelize).
 
 Long term plans:
 
