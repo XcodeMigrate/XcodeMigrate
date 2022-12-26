@@ -4,7 +4,7 @@ import PathKit
 import XCTest
 
 final class AbstractTargetPlusBazelGenTests: XCTestCase {
-    func testExample() throws {
+    func testMinimalExample() throws {
         let targetName = "SampleTarget"
         let sourceFile1 = "\(targetName)/Foo.swift"
         let sourceFile2 = "\(targetName)/Bar.swift"
@@ -12,10 +12,21 @@ final class AbstractTargetPlusBazelGenTests: XCTestCase {
             AbstractSourceFile(path: Path(sourceFile1)),
             AbstractSourceFile(path: Path(sourceFile2)),
         ]
-        let target = AbstractTarget(name: "SampleTarget", productType: .framework, path: Path(targetName), sourceFile: sourceFiles)
+        let target = AbstractTarget(name: "SampleTarget", productType: .framework, path: Path(targetName), sourceFiles: sourceFiles, dependencies: [])
 
         let swiftBazelLibString = try target.bazelGen()
+        
+        let expected = """
+        swift_library(
+            name = "\(targetName)",
+            srcs = [
+        "\(sourceFile1)",
+        "\(sourceFile2)"
+        ],
+            deps = "[]"
+        )
+        """
 
-        XCTAssertEqual("swift_library(\n    name = \"\(targetName)\",\n    srcs = [\"\(sourceFile1)\",\n\"\(sourceFile2)\"]\n)", swiftBazelLibString)
+        XCTAssertEqual(expected, swiftBazelLibString)
     }
 }

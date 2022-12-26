@@ -12,11 +12,13 @@ public struct AbstractTarget {
     public let productType: ProductType
     public let path: Path
     public let sourceFiles: [AbstractSourceFile]
+    public let dependencies: [AbstractTarget]
 
-    public init(name: String, productType: ProductType, path: Path, sourceFile: [AbstractSourceFile]) {
+    public init(name: String, productType: ProductType, path: Path, sourceFiles: [AbstractSourceFile], dependencies: [AbstractTarget]) {
         self.name = name
         self.productType = productType
         self.path = path
-        self.sourceFiles = sourceFile
+        self.sourceFiles = sourceFiles
+        self.dependencies = dependencies
     }
 }

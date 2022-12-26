@@ -16,27 +16,10 @@ public class XcodeParser {
     }
 
     func perform() throws {
+//        let targetMap: [String: AbstractTarget] = [:] // TODO: Memorize targets generated so far
+
         let targets: [AbstractTarget] = try project.pbxproj.nativeTargets.compactMap { target -> AbstractTarget? in
-            let name = target.name
-            guard let productType = target.productType else {
-                return nil
-            }
-
-            let targetPath = try! AbstractTarget.findTargetRootPath(target: target, projectRoot: projectRoot)
-
-            let sourceBuildPhase = try target.sourcesBuildPhase()
-            let sourceFiles: [AbstractSourceFile]? = sourceBuildPhase?.files?.compactMap { file in
-                guard let fileElement = file.file else {
-                    return nil
-                }
-                guard let abstractFile = AbstractSourceFile(from: fileElement) else {
-                    return nil
-                }
-
-                return abstractFile
-            }
-
-            return AbstractTarget(name: name, productType: ProductType(from: productType), path: targetPath, sourceFile: sourceFiles ?? [])
+            try AbstractTarget(from: target, projectRoot: projectRoot)
         }
 
         abstractProject = AbstractProject(targets: targets)

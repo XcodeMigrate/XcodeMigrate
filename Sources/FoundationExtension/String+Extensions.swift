@@ -20,8 +20,11 @@ public extension String {
     }
 }
 
-public extension Sequence where Element == String {
+public extension Array where Element == String {
     func toArrayLiteralString() -> String {
-        return "[" + map { "\"\($0)\"" }.joined(separator: ",\n") + "]"
+        guard !isEmpty else {
+            return "[]"
+        }
+        return "[\n" + map { "\"\($0)\"" }.joined(separator: ",\n") + "\n]"
     }
 }
