@@ -33,5 +33,6 @@ let package = Package(
             name: "XcodeParserTests",
             dependencies: ["XcodeParser"]
         ),
+        .testTarget(name: "BazelGeneratorTests", dependencies: ["BazelGenerator"]),
     ]
 )

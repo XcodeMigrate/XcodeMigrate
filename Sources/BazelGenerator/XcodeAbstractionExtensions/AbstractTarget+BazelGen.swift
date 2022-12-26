@@ -25,7 +25,7 @@ extension AbstractTarget {
 
 private extension AbstractTarget {
     func generateSwiftLibrary() -> String {
-        let sourcePaths = sourceFile.map { $0.path.string }
+        let sourcePaths = sourceFiles.map { $0.path.string }
 
         return """
         swift_library(
