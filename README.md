@@ -8,7 +8,7 @@ Long term plans:
 - Generate [Xcodegen](https://github.com/yonaskolb/XcodeGen) YAML files
 
 This project is still in its early stages. It is not yet ready for production use.
-If you have any questions or ideas, please feel free to [open a discussion](https://github.com/dahchon/XcodeMigrate/discussions/new).
+If you have any questions or ideas, please feel free to [open a discussion](https://github.com/XcodeMigrate/XcodeMigrate/discussions/new).
 
 ## Why XcodeMigrate?
 
