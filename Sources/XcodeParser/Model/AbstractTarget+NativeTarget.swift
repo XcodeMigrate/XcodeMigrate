@@ -25,6 +25,13 @@ extension AbstractTarget {
         }
 
         let targetPath = try! AbstractTarget.findTargetRootPath(target: target, projectRoot: projectRoot)
+        let normalizedTargetPath: Path = {
+            if targetPath.isAbsolute {
+                return targetPath
+            } else {
+                return projectRoot + targetPath
+            }
+        }()
 
         let sourceBuildPhase = try target.sourcesBuildPhase()
         let sourceFiles: [AbstractSourceFile]? = sourceBuildPhase?.files?.compactMap { file in
@@ -49,6 +56,6 @@ extension AbstractTarget {
             infoPlist,
         ])
 
-        self.init(name: name, productType: ProductType(from: productType), path: targetPath, sourceFiles: sourceFiles ?? [], dependencies: dependencyTargets, infoPlistPath: infoPlistPath)
+        self.init(name: name, productType: ProductType(from: productType), path: normalizedTargetPath, sourceFiles: sourceFiles ?? [], dependencies: dependencyTargets, infoPlistPath: infoPlistPath)
     }
 }

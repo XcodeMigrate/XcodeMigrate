@@ -15,12 +15,12 @@ enum BazelGeneratorAbstractTargetError: Error {
 
 extension AbstractTarget {
     func buildFilePath() -> Path {
-        path + "BUILD.bazel"
+        return path + "BUILD.bazel"
     }
 }
 
 extension AbstractTarget {
-    func generateRules() throws -> [BazelRule] {
+    func generateRules() throws -> [CreateBuildFileOperation] {
         switch productType {
         case .framework:
             return generateFramework()
@@ -37,18 +37,22 @@ extension AbstractTarget {
 }
 
 private extension AbstractTarget {
-    func generateFramework() -> [BazelRule] {
+    func generateFramework() -> [CreateBuildFileOperation] {
         let prefixString = path.string
         let sourcePaths = sourceFiles.map { sourceFile in
             sourceFile.path.string.removePrefix(prefix: prefixString).removePrefix(prefix: "/")
         }
 
         return [
-            .swiftLibrary(name: name, srcs: sourcePaths, deps: dependencyLabels),
+            CreateBuildFileOperation(targetPath: buildFilePath(), rules: [
+                .swiftLibrary(name: name, srcs: sourcePaths, deps: dependencyLabels),
+            ]),
+            CreateBuildFileOperation(targetPath: infoPlistPath, rules: [
+            ]),
         ]
     }
 
-    func generatePhoneOSApplication() -> [BazelRule] {
+    func generatePhoneOSApplication() -> [CreateBuildFileOperation] {
         let prefixString = path.string
         let sourcePaths = sourceFiles.map { $0.path.string.removePrefix(prefix: prefixString).removePrefix(prefix: "/") }
 
@@ -56,10 +60,14 @@ private extension AbstractTarget {
         let mainTargetSource: BazelRule = .swiftLibrary(name: sourceName, srcs: sourcePaths, deps: dependencyLabels)
 
         return [
-            .iosApplication(name: name, deps: [
-                ":\(sourceName)",
+            CreateBuildFileOperation(targetPath: path, rules: [
+                .iosApplication(name: name, deps: [
+                    ":\(sourceName)",
+                ]),
+                mainTargetSource,
             ]),
-            mainTargetSource,
+            CreateBuildFileOperation(targetPath: infoPlistPath, rules: [
+            ]),
         ]
     }
 }
