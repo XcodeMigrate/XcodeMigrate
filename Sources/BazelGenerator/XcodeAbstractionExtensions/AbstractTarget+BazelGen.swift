@@ -18,13 +18,19 @@ enum BazelGeneratorAbstractTargetError: Error {
 }
 
 extension AbstractTarget {
-    func buildFilePath() -> Path {
-        return path + "BUILD.bazel"
+    func buildFilePath(rootPath: Path) -> Path {
+        let buildFilePath = path + "BUILD.bazel"
+        guard !buildFilePath.isAbsolute else {
+            return buildFilePath
+        }
+
+        let normalizedBuildFilePath = rootPath + buildFilePath
+        return normalizedBuildFilePath
     }
 }
 
 extension AbstractTarget {
-    func generateRules(rootPath: Path) throws -> [CreateBuildFileOperation] {
+    func generateBazelFileCreateOperations(rootPath: Path) throws -> [CreateBuildFileOperation] {
         switch productType {
         case .framework:
             return generateFramework(rootPath: rootPath)
@@ -58,7 +64,7 @@ private extension AbstractTarget {
         let infoPlistLabelFromCurrentTarget = "/" + infoPlistDirectory.string.removePrefix(prefix: rootPath.string) + ":\(infoPlistLabel)"
 
         return [
-            CreateBuildFileOperation(targetPath: buildFilePath(), rules: [
+            CreateBuildFileOperation(targetPath: buildFilePath(rootPath: rootPath), rules: [
                 .swiftLibrary(name: swiftLibraryName, srcs: sourcePaths, deps: dependencyLabels, moduleName: name),
                 .iosFramework(name: name, deps: [":\(swiftLibraryName)"], bundleID: "to.do.\(name)", minimumOSVersion: "13.0", deviceFamilies: [.iphone], infoPlists: [infoPlistLabelFromCurrentTarget]),
             ]),
