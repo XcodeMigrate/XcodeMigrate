@@ -55,7 +55,7 @@ private extension AbstractTarget {
 
         return [
             CreateBuildFileOperation(targetPath: buildFilePath(), rules: [
-                .swiftLibrary(name: swiftLibraryName, srcs: sourcePaths, deps: dependencyLabels),
+                .swiftLibrary(name: swiftLibraryName, srcs: sourcePaths, deps: dependencyLabels, moduleName: name),
                 .iosFramework(name: name, deps: [":\(swiftLibraryName)"], bundleID: "to.do.\(name)", minimumOSVersion: "13.0", deviceFamilies: [.iphone], infoPlists: [infoPlistLabelFromCurrentTarget]),
             ]),
             CreateBuildFileOperation(targetPath: infoPlistBuildFilePath, rules: [
@@ -74,7 +74,7 @@ private extension AbstractTarget {
         }
 
         let sourceName = "\(name)_source"
-        let mainTargetSource: BazelRule = .swiftLibrary(name: sourceName, srcs: sourcePaths, deps: dependencyLabels)
+        let mainTargetSource: BazelRule = .swiftLibrary(name: sourceName, srcs: sourcePaths, deps: dependencyLabels, moduleName: name)
 
         let infoPlistDirectory = Path(infoPlistPath.url.deletingLastPathComponent().path)
         let infoPlistBuildFilePath = infoPlistDirectory + "BUILD.bazel"

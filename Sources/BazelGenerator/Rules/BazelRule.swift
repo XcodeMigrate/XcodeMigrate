@@ -1,7 +1,7 @@
 import XcodeAbstraction
 
 @frozen enum BazelRule {
-    case swiftLibrary(name: String, srcs: [String], deps: [String])
+    case swiftLibrary(name: String, srcs: [String], deps: [String], moduleName: String)
     case iosApplication(name: String, deps: [String], infoplists: [String])
     case iosFramework(name: String, deps: [String], bundleID: String, minimumOSVersion: String, deviceFamilies: [BazelRule.DeviceFamily], infoPlists: [String])
     case filegroup(name: String, srcs: [String])
@@ -25,12 +25,13 @@ extension BazelRule {
 extension BazelRule {
     var generatedRuleString: String {
         switch self {
-        case let .swiftLibrary(name, srcs, deps):
+        case let .swiftLibrary(name, srcs, deps, moduleName):
             return """
             swift_library(
                 name = "\(name)",
                 srcs = \(srcs.toArrayLiteralString()),
                 deps = \(deps.toArrayLiteralString()),
+                module_name = "\(moduleName)",
                 visibility = ["//visibility:public"],
             )
             """
