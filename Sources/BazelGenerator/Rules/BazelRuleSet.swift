@@ -2,6 +2,8 @@
 enum BazelRuleSet: Hashable {
     case swift
     case apple
+    
+    case builtIn
 }
 
 extension BazelRuleSet {
@@ -65,6 +67,8 @@ extension BazelRuleSet {
 
             apple_support_dependencies()
             """
+        case .builtIn:
+            return ""
         }
     }
 }

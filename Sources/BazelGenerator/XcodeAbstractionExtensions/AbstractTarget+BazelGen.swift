@@ -20,12 +20,12 @@ extension AbstractTarget {
 }
 
 extension AbstractTarget {
-    func generateRules() throws -> [CreateBuildFileOperation] {
+    func generateRules(rootPath: Path) throws -> [CreateBuildFileOperation] {
         switch productType {
         case .framework:
-            return generateFramework()
+            return generateFramework(rootPath: rootPath)
         case .application:
-            return generatePhoneOSApplication()
+            return generatePhoneOSApplication(rootPath: rootPath)
         case .unitTestBundle:
             fallthrough
         case .uiTestBundle:
@@ -37,36 +37,57 @@ extension AbstractTarget {
 }
 
 private extension AbstractTarget {
-    func generateFramework() -> [CreateBuildFileOperation] {
+    func generateFramework(rootPath: Path) -> [CreateBuildFileOperation] {
         let prefixString = path.string
         let sourcePaths = sourceFiles.map { sourceFile in
             sourceFile.path.string.removePrefix(prefix: prefixString).removePrefix(prefix: "/")
         }
 
+        let infoPlistDirectory = Path(infoPlistPath.url.deletingLastPathComponent().path)
+        let infoPlistBuildFilePath = infoPlistDirectory + "BUILD.bazel"
+
+        let swiftLibraryName = "\(name)_lib"
+
+        let infoPlistLabel = "\(name)_InfoPlist"
+
+        let infoPlistLabelFromCurrentTarget = "/" + infoPlistDirectory.string.removePrefix(prefix: rootPath.string) + ":\(infoPlistLabel)"
+
         return [
             CreateBuildFileOperation(targetPath: buildFilePath(), rules: [
                 .swiftLibrary(name: name, srcs: sourcePaths, deps: dependencyLabels),
+                .iosFramework(name: name, deps: [":\(swiftLibraryName)"], bundleID: "to.do.\(name)", minimumOSVersion: "13.0", deviceFamilies: [.iphone], infoPlists: [infoPlistLabelFromCurrentTarget]),
             ]),
-            CreateBuildFileOperation(targetPath: infoPlistPath, rules: [
+            CreateBuildFileOperation(targetPath: infoPlistBuildFilePath, rules: [
+                .filegroup(name: infoPlistLabel, srcs: [
+                    infoPlistPath.string.removePrefix(prefix: infoPlistDirectory.string),
+                ]),
             ]),
         ]
     }
 
-    func generatePhoneOSApplication() -> [CreateBuildFileOperation] {
+    func generatePhoneOSApplication(rootPath: Path) -> [CreateBuildFileOperation] {
         let prefixString = path.string
         let sourcePaths = sourceFiles.map { $0.path.string.removePrefix(prefix: prefixString).removePrefix(prefix: "/") }
 
         let sourceName = "\(name)_source"
         let mainTargetSource: BazelRule = .swiftLibrary(name: sourceName, srcs: sourcePaths, deps: dependencyLabels)
 
+        let infoPlistDirectory = Path(infoPlistPath.url.deletingLastPathComponent().path)
+        let infoPlistBuildFilePath = infoPlistDirectory + "BUILD.bazel"
+
+        let infoPlistLabel = "\(name)_InfoPlist"
+
+        let infoPlistLabelFromCurrentTarget = "/" + infoPlistDirectory.string.removePrefix(prefix: rootPath.string) + ":\(infoPlistLabel)"
+
         return [
             CreateBuildFileOperation(targetPath: path, rules: [
                 .iosApplication(name: name, deps: [
                     ":\(sourceName)",
-                ]),
+                ],
+                infoplists: [infoPlistLabelFromCurrentTarget]),
                 mainTargetSource,
             ]),
-            CreateBuildFileOperation(targetPath: infoPlistPath, rules: [
+            CreateBuildFileOperation(targetPath: infoPlistBuildFilePath, rules: [
             ]),
         ]
     }

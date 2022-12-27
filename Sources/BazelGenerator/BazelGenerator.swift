@@ -15,7 +15,7 @@ public extension BazelGenerator {
         var buildFileOperations: [Path: [CreateBuildFileOperation]] = [:]
 
         for target in project.targets {
-            guard let createBuildFileOperations = try? target.generateRules() else {
+            guard let createBuildFileOperations = try? target.generateRules(rootPath: project.rootPath) else {
                 // TODO: Test all supported product types
                 continue
             }

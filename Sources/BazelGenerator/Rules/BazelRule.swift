@@ -2,8 +2,9 @@ import XcodeAbstraction
 
 @frozen enum BazelRule {
     case swiftLibrary(name: String, srcs: [String], deps: [String])
-    case iosApplication(name: String, deps: [String])
+    case iosApplication(name: String, deps: [String], infoplists: [String])
     case iosFramework(name: String, deps: [String], bundleID: String, minimumOSVersion: String, deviceFamilies: [BazelRule.DeviceFamily], infoPlists: [String])
+    case filegroup(name: String, srcs: [String])
 }
 
 extension BazelRule {
@@ -15,6 +16,8 @@ extension BazelRule {
             return .apple
         case .iosFramework:
             return .apple
+        case .filegroup:
+            return .builtIn
         }
     }
 }
@@ -31,11 +34,12 @@ extension BazelRule {
                 visibility = ["//visibility:public"],
             )
             """
-        case let .iosApplication(name, deps):
+        case let .iosApplication(name, deps, infoplists):
             return """
             ios_application(
                 name = "\(name)",
-                deps = \(deps.toArrayLiteralString())
+                deps = \(deps.toArrayLiteralString()),
+                infoplists = "\(infoplists.toArrayLiteralString())"
             )
             """
         case let .iosFramework(name, deps, bundleID, minimumOSVersion, deviceFamilies, infoPlists):
@@ -48,6 +52,13 @@ extension BazelRule {
                 minimum_os_version = "\(minimumOSVersion)",
                 visibility = ["//visibility:public"],
                 deps = \(deps.toArrayLiteralString()),
+            )
+            """
+        case let .filegroup(name, srcs):
+            return """
+            filegroup(
+                name = "\(name)",
+                srcs = \(srcs.toArrayLiteralString()),
             )
             """
         }
@@ -65,6 +76,8 @@ extension BazelRule {
             """
         case .iosFramework:
             return #"load("@build_bazel_rules_apple//apple:ios.bzl", "ios_framework")"#
+        case .filegroup:
+            return ""
         }
     }
 }
