@@ -21,7 +21,7 @@ However, migrating existing (large) Xcode project to Bazel is not easy. It requi
 
 ## Goals
 
-- Easy and quick setup process for most projects
+- Ready to use out of the box, minimal configuration for most projects
 - Full support [rules_xcodeproj](https://github.com/buildbuddy-io/rules_xcodeproj)
 - Mixed language target (Objective-C/Swift) generation using [rules_ios](https://github.com/bazel-ios/rules_ios)
 
@@ -32,11 +32,16 @@ However, migrating existing (large) Xcode project to Bazel is not easy. It requi
 
 ```
 XcodeMigrate
- ├─XcodeParser - Parsing layer
- │  └─XcodeProj
- ├─XcodeAbstraction - Modeling layer (without any dependency to XcodeProj)
- └─FoundationExtension
+ |--XcodeParser - Parsing layer
+ |   `--XcodeProj
+ |--XcodeAbstraction - Modeling layer (without any dependency to XcodeProj)
+ |--BazelGenerator
+ |--Common - Shared logic such as logging
+ |--FoundationExtension - Extensions to Foundation
+ `--TestSupport - Test helpers
  ```
+
+ (Created by [Diagon](https://github.com/ArthurSonzogni/Diagon))
 
 ## Attributions
 
