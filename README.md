@@ -1,6 +1,6 @@
 # XcodeMigrate
 
-Generate Bazel BUILD files from Xcode projects. Inspired by [XCodeBazelize/Bazelize](https://github.com/XCodeBazelize/Bazelize).
+Generate Bazel BUILD files from Xcode projects.
 
 Long term plans:
 
@@ -37,6 +37,22 @@ XcodeMigrate
  ├─XcodeAbstraction - Modeling layer (without any dependency to XcodeProj)
  └─FoundationExtension
  ```
+
+## Attributions
+
+This tool is powered by:
+
+- [XcodeProj](https://github.com/tuist/XcodeProj)
+- [PathKit](https://github.com/kylef/PathKit)
+
+Inspired by:
+
+- [XCodeBazelize/Bazelize](https://github.com/XCodeBazelize/Bazelize).
+
+## Contributing to XcodeMigrate
+
+We'd love to accept your patches and contributions to this project.
+Please feel free to open a pull request, an issue, or a discussion.
 
 ## License
 

@@ -1,6 +1,6 @@
 import XcodeAbstraction
 
-@frozen enum BazelRule {
+@frozen enum BazelRule: Hashable {
     case swiftLibrary(name: String, srcs: [String], deps: [String], moduleName: String)
     case iosApplication(name: String, deps: [String], infoplists: [String], minimumOSVersion: String, deviceFamilies: [BazelRule.DeviceFamily])
     case iosFramework(name: String, deps: [String], bundleID: String, minimumOSVersion: String, deviceFamilies: [BazelRule.DeviceFamily], infoPlists: [String])

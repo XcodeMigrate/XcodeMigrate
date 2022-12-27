@@ -7,7 +7,7 @@
 
 import PathKit
 
-struct CreateBuildFileOperation {
+struct CreateBuildFileOperation: Hashable, Equatable {
     let targetPath: Path
     let rules: [BazelRule]
 
