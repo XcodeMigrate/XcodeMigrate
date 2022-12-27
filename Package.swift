@@ -8,6 +8,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/tuist/XcodeProj.git", .upToNextMajor(from: "8.8.0")),
         .package(url: "https://github.com/kylef/PathKit.git", .upToNextMajor(from: "1.0.1")),
+        .package(url: "https://github.com/apple/swift-log.git", from: "1.0.0"),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -16,6 +17,7 @@ let package = Package(
             name: "XcodeMigrate",
             dependencies: [
                 "XcodeParser",
+                "Common",
             ]
         ),
         .target(name: "XcodeParser", dependencies: ["XcodeProj", "XcodeAbstraction", "FoundationExtension"]),
@@ -26,6 +28,9 @@ let package = Package(
 
         .target(name: "FoundationExtension"),
 
+        .target(name: "Common", dependencies: [
+            .product(name: "Logging", package: "swift-log"),
+        ]),
         .target(name: "TestSupport", path: "Tests/TestSupport"),
         .testTarget(
             name: "XcodeMigrateTests",
