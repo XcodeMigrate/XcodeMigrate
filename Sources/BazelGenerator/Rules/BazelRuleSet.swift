@@ -2,7 +2,7 @@
 enum BazelRuleSet: Hashable {
     case swift
     case apple
-    
+
     case builtIn
 }
 

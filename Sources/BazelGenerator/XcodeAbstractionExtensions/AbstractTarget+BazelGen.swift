@@ -2,6 +2,10 @@ import FoundationExtension
 import PathKit
 import XcodeAbstraction
 
+private enum AbstractTargetBazelGenConstants {
+    static let frameworkLibSuffix = "_lib"
+}
+
 enum BazelGeneratorAbstractTargetError: Error {
     case unimplemented(productType: ProductType)
 
@@ -47,7 +51,7 @@ private extension AbstractTarget {
         let infoPlistDirectory = Path(infoPlistPath.url.deletingLastPathComponent().path)
         let infoPlistBuildFilePath = infoPlistDirectory + "BUILD.bazel"
 
-        let swiftLibraryName = "\(name)_lib"
+        let swiftLibraryName = "\(name)\(AbstractTargetBazelGenConstants.frameworkLibSuffix)"
 
         let infoPlistLabel = "\(name)_InfoPlist"
 
@@ -74,7 +78,12 @@ private extension AbstractTarget {
         }
 
         let sourceName = "\(name)_source"
-        let mainTargetSource: BazelRule = .swiftLibrary(name: sourceName, srcs: sourcePaths, deps: dependencyLabels, moduleName: name)
+        let mainTargetSource: BazelRule = .swiftLibrary(
+            name: sourceName,
+            srcs: sourcePaths,
+            deps: dependencyLabels.map { $0 + AbstractTargetBazelGenConstants.frameworkLibSuffix },
+            moduleName: name
+        )
 
         let infoPlistDirectory = Path(infoPlistPath.url.deletingLastPathComponent().path)
         let infoPlistBuildFilePath = infoPlistDirectory + "BUILD.bazel"
@@ -89,7 +98,7 @@ private extension AbstractTarget {
             CreateBuildFileOperation(targetPath: applicationBuildFilePath, rules: [
                 .iosApplication(name: name, deps: [
                     ":\(sourceName)",
-                ],
+                ] + dependencyLabels,
                 infoplists: [infoPlistLabelFromCurrentTarget]),
                 mainTargetSource,
             ]),
@@ -110,7 +119,7 @@ private extension AbstractTarget {
                 dependency.path.string,
             ])
             let dependencyLabelWithOutCommonPath = dependency.path.string[commonPathPrefix.endIndex...]
-            return "//\(dependencyLabelWithOutCommonPath)"
+            return "/\(dependencyLabelWithOutCommonPath)"
         }
     }
 }
