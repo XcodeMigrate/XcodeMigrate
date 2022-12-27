@@ -14,7 +14,7 @@ final class AbstractTargetPlusBazelGenTests: XCTestCase {
         ]
         let target = AbstractTarget(name: "SampleTarget", productType: .framework, path: Path(targetName), sourceFiles: sourceFiles, dependencies: [])
 
-        let swiftBazelLibString = try target.bazelGen()
+        let swiftBazelLibString = try target.generateRules().map(\.generatedRuleString).joined(separator: "\n")
 
         let expected = """
         swift_library(
@@ -42,7 +42,7 @@ final class AbstractTargetPlusBazelGenTests: XCTestCase {
         let dependency2 = AbstractTarget(name: "Dependency2", productType: .framework, path: Path("Dependency2"), sourceFiles: [], dependencies: [])
         let target = AbstractTarget(name: "SampleTarget", productType: .framework, path: Path(targetName), sourceFiles: sourceFiles, dependencies: [dependency1, dependency2])
 
-        let swiftBazelLibString = try! target.bazelGen()
+        let generaltedRules = try! target.generateRules().map(\.generatedRuleString).joined(separator: "\n")
 
         let expected = """
         swift_library(
@@ -58,6 +58,6 @@ final class AbstractTargetPlusBazelGenTests: XCTestCase {
         )
         """
 
-        XCTAssertEqual(expected, swiftBazelLibString)
+        XCTAssertEqual(expected, generaltedRules)
     }
 }

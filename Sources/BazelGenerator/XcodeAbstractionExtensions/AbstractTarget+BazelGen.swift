@@ -20,7 +20,7 @@ extension AbstractTarget {
 }
 
 extension AbstractTarget {
-    func bazelGen() throws -> String {
+    func generateRules() throws -> [BazelRule] {
         switch productType {
         case .framework:
             return generateFramework()
@@ -37,28 +37,20 @@ extension AbstractTarget {
 }
 
 private extension AbstractTarget {
-    func generateFramework() -> String {
+    func generateFramework() -> [BazelRule] {
         let sourcePaths = sourceFiles.map { $0.path.string }
 
-        return """
-        swift_library(
-            name = "\(name)",
-            srcs = \(sourcePaths.toArrayLiteralString()),
-            deps = \(dependencyLabels.toArrayLiteralString())
-        )
-        """
+        return [
+            .swiftLibrary(name: name, srcs: sourcePaths, deps: dependencyLabels),
+        ]
     }
 
-    func generatePhoneOSApplication() -> String {
+    func generatePhoneOSApplication() -> [BazelRule] {
         let sourcePaths = sourceFiles.map { $0.path.string }
 
-        return """
-        ios_application(
-            name = "\(name)",
-            srcs = \(sourcePaths.toArrayLiteralString()),
-            deps = \(dependencyLabels.toArrayLiteralString())
-        )
-        """
+        return [
+            .iosApplication(name: name, srcs: sourcePaths, deps: dependencyLabels),
+        ]
     }
 }
 
