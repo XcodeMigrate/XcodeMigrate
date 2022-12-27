@@ -30,8 +30,7 @@ public extension BazelGenerator {
                 try fileManager.removeItem(at: normalizedBuildFilePath.url)
             }
 
-            fileManager.createFile(atPath: normalizedBuildFilePath.string, contents: nil, attributes: nil)
-            try generatedRules.write(to: buildFilePath.url, atomically: true, encoding: .utf8)
+            fileManager.createFile(atPath: normalizedBuildFilePath.string, contents: generatedRules.data(using: .utf8), attributes: nil)
         }
     }
 }
