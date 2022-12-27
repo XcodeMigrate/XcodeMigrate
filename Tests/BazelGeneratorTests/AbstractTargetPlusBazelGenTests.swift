@@ -74,34 +74,30 @@ final class AbstractTargetPlusBazelGenTests: XCTestCase {
             CreateBuildFileOperation(
                 targetPath: "/path/of/root/SampleTarget/BUILD.bazel",
                 rules: [
-                    BazelRule.swiftLibrary(
-                        name: "SampleTarget_lib",
-                        srcs: ["path/of/root/SampleTarget/Foo.swift", "path/of/root/SampleTarget/Bar.swift"],
-                        deps: [":Dependency1", ":Dependency2"],
-                        moduleName: "SampleTarget"
-                    ),
-                    BazelRule.iosFramework(
-                        name: "SampleTarget",
-                        deps: [":SampleTarget_lib"],
-                        bundleID: "to.do.SampleTarget",
-                        minimumOSVersion: "13.0",
-                        deviceFamilies: [BazelRule.DeviceFamily.iphone],
-                        infoPlists: ["//Path/To:SampleTarget_InfoPlist"]
-                    )
+                    BazelRule.swiftLibrary(name: "SampleTarget_lib", srcs: ["path/of/root/SampleTarget/Foo.swift", "path/of/root/SampleTarget/Bar.swift"], deps: ["/Dependency1:Dependency1", "/Dependency2:Dependency2"], moduleName: "SampleTarget"),
+                    BazelRule.iosFramework(name: "SampleTarget", deps: [":SampleTarget_lib"], bundleID: "to.do.SampleTarget", minimumOSVersion: "13.0", deviceFamilies: [BazelRule.DeviceFamily.iphone], infoPlists: ["//Path/To:SampleTarget_InfoPlist"])
                 ]
             ),
-
             CreateBuildFileOperation(
                 targetPath: "/path/of/root/Path/To/BUILD.bazel",
                 rules: [
-                    BazelRule.filegroup(
-                        name: "SampleTarget_InfoPlist",
-                        srcs: ["Info.plist"]
-                    )
+                    BazelRule.filegroup(name: "SampleTarget_InfoPlist", srcs: ["Info.plist"])
                 ]
             )
         ]
 
-        XCTAssertEqual(generatedOperations, expectedOperations)
+        XCTAssertEqual(generatedOperations.count, expectedOperations.count)
+        assertCreateBuildFileOperationEqual(generatedOperations[0], expectedOperations[0])
+        assertCreateBuildFileOperationEqual(generatedOperations[1], expectedOperations[1])
+    }
+}
+
+private extension AbstractTargetPlusBazelGenTests {
+    func assertCreateBuildFileOperationEqual(_ lhs: CreateBuildFileOperation, _ rhs: CreateBuildFileOperation) {
+        XCTAssertEqual(lhs.targetPath, rhs.targetPath)
+        XCTAssertEqual(lhs.rules.count, rhs.rules.count)
+        for (index, rule) in lhs.rules.enumerated() {
+            XCTAssertEqual(rule, rhs.rules[index])
+        }
     }
 }
