@@ -39,7 +39,7 @@ extension BazelRule {
             ios_application(
                 name = "\(name)",
                 deps = \(deps.toArrayLiteralString()),
-                infoplists = "\(infoplists.toArrayLiteralString())"
+                infoplists = \(infoplists.toArrayLiteralString())
             )
             """
         case let .iosFramework(name, deps, bundleID, minimumOSVersion, deviceFamilies, infoPlists):
@@ -55,10 +55,12 @@ extension BazelRule {
             )
             """
         case let .filegroup(name, srcs):
+            // TODO: Improve visibility
             return """
             filegroup(
                 name = "\(name)",
                 srcs = \(srcs.toArrayLiteralString()),
+                visibility = ["//visibility:public"],
             )
             """
         }
