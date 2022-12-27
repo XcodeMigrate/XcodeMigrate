@@ -23,7 +23,7 @@ extension AbstractTarget {
     func bazelGen() throws -> String {
         switch productType {
         case .framework:
-            return generateSwiftLibrary()
+            return generateFramework()
         case .application:
             return generatePhoneOSApplication()
         case .unitTestBundle:
@@ -37,7 +37,7 @@ extension AbstractTarget {
 }
 
 private extension AbstractTarget {
-    func generateSwiftLibrary() -> String {
+    func generateFramework() -> String {
         let sourcePaths = sourceFiles.map { $0.path.string }
 
         return """
