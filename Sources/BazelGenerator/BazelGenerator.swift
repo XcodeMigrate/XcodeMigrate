@@ -1,6 +1,9 @@
+import Common
 import Foundation
 import PathKit
 import XcodeAbstraction
+
+let logger = Logger(label: "BazelGenerator")
 
 public enum BazelGenerator {}
 
@@ -17,6 +20,7 @@ public extension BazelGenerator {
         for target in project.targets {
             guard let createBuildFileOperations = try? target.generateBazelFileCreateOperations(rootPath: project.rootPath) else {
                 // TODO: Test all supported product types
+                logger.critical("Failed to generate Bazel file for target: \(target.name) because of unsupported product type: \(target.productType)")
                 continue
             }
             for operation in createBuildFileOperations {

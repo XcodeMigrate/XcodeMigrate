@@ -1,10 +1,13 @@
+import Common
 import XcodeParser
+
+let logger = Logger(label: "XcodeMigrate")
 
 @main
 public struct XcodeMigrate {
     public private(set) var text = "Hello, World!"
 
     public static func main() {
-        print(XcodeMigrate().text)
+        logger.info("\(XcodeMigrate().text)")
     }
 }
