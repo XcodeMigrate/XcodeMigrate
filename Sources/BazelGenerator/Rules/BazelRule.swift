@@ -36,7 +36,7 @@ extension BazelRule {
             )
             """
         case let .iosApplication(name, deps, infoplists, minimumOSVersion, deviceFamilies):
-            // TODO: Fix bundle id parsing
+            // TODO: Fix bundle id parsing (<https://github.com/XcodeMigrate/XcodeMigrate/issues/4>)
             return """
             ios_application(
                 name = "\(name)",
@@ -60,7 +60,7 @@ extension BazelRule {
             )
             """
         case let .filegroup(name, srcs):
-            // TODO: Improve visibility
+            // TODO: Improve visibility (<https://github.com/XcodeMigrate/XcodeMigrate/issues/5>)
             return """
             filegroup(
                 name = "\(name)",

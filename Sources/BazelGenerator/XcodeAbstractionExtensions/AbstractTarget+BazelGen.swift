@@ -64,7 +64,7 @@ private extension AbstractTarget {
             ]),
             CreateBuildFileOperation(targetPath: infoPlistBuildFilePath, rules: [
                 .filegroup(name: infoPlistLabel, srcs: [
-                    infoPlistPath.string.removePrefix(prefix: infoPlistDirectory.string).removePrefix(prefix: "/"), // TODO: better path handling
+                    infoPlistPath.string.removePrefix(prefix: infoPlistDirectory.string).removePrefix(prefix: "/"), // TODO: better path handling (<https://github.com/XcodeMigrate/XcodeMigrate/issues/6>)
                 ]),
             ]),
         ]
@@ -104,8 +104,8 @@ private extension AbstractTarget {
                         ":\(sourceName)",
                     ] + dependencyLabels,
                     infoplists: [infoPlistLabelFromCurrentTarget],
-                    minimumOSVersion: "13.0", // TODO: Parse deployment target
-                    deviceFamilies: [.iphone] // TODO: Parse device family
+                    minimumOSVersion: "13.0", // TODO: Parse deployment target (<https://github.com/XcodeMigrate/XcodeMigrate/issues/7>)
+                    deviceFamilies: [.iphone] // TODO: Parse device family (<https://github.com/XcodeMigrate/XcodeMigrate/issues/8>)
                 ),
                 mainTargetSource,
             ]),
