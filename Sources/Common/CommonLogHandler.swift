@@ -40,7 +40,7 @@ public struct CommonLogHandler: LogHandler {
             }
         #endif
 
-        print("\(color)[\(label)] \(level): \(message)")
+        print("\(color)[\(label)] \(level): \(message)\(Constants.reset)")
     }
 }
 
@@ -54,6 +54,9 @@ private extension CommonLogHandler {
         static let magenta = "\u{001B}[0;35m"
         static let cyan = "\u{001B}[0;36m"
         static let white = "\u{001B}[0;37m"
+
+        static let reset = "\u{001B}[0m"
+
         static let `default` = "\u{001B}[0;0m"
     }
 }
