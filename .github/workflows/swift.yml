@@ -22,7 +22,7 @@ jobs:
       - name: Install dependencies
         run: cd fixtures && make prepare
 
-      - name: Generated fixtures
+      - name: Generat fixtures
         run: cd fixtures && make generate
 
       - name: Build
