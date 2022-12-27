@@ -3,6 +3,7 @@ import XcodeAbstraction
 @frozen enum BazelRule {
     case swiftLibrary(name: String, srcs: [String], deps: [String])
     case iosApplication(name: String, deps: [String])
+    case iosFramework(name: String, deps: [String], bundleID: String, minimumOSVersion: String, deviceFamilies: [BazelRule.DeviceFamily], infoPlists: [String])
 }
 
 extension BazelRule {
@@ -11,6 +12,8 @@ extension BazelRule {
         case .swiftLibrary:
             return .swift
         case .iosApplication:
+            return .apple
+        case .iosFramework:
             return .apple
         }
     }
@@ -35,6 +38,18 @@ extension BazelRule {
                 deps = \(deps.toArrayLiteralString())
             )
             """
+        case let .iosFramework(name, deps, bundleID, minimumOSVersion, deviceFamilies, infoPlists):
+            return """
+            ios_framework(
+                name = "\(name)",
+                bundle_id = "\(bundleID)",
+                families = \(deviceFamilies.map(\.rawValue).toArrayLiteralString()),
+                infoplists = \(infoPlists.toArrayLiteralString()),
+                minimum_os_version = "\(minimumOSVersion)",
+                visibility = ["//visibility:public"],
+                deps = \(deps.toArrayLiteralString()),
+            )
+            """
         }
     }
 
@@ -48,6 +63,8 @@ extension BazelRule {
             return """
             load("@build_bazel_rules_apple//apple:ios.bzl", "ios_application")
             """
+        case .iosFramework:
+            return #"load("@build_bazel_rules_apple//apple:ios.bzl", "ios_framework")"#
         }
     }
 }
