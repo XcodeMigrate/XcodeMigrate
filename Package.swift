@@ -19,20 +19,22 @@ let package = Package(
             ]
         ),
         .target(name: "XcodeParser", dependencies: ["XcodeProj", "XcodeAbstraction", "FoundationExtension"]),
-        .target(name: "BazelGenerator", dependencies: ["XcodeAbstraction", "PathKit"]),
+        .target(name: "BazelGenerator", dependencies: ["XcodeAbstraction", "PathKit", "XcodeParser"]),
 
         // Intermediate Abstraction of Xcode Project without dependening on `XcodeProj`
         .target(name: "XcodeAbstraction", dependencies: ["FoundationExtension", "PathKit"]),
 
         .target(name: "FoundationExtension"),
+
+        .target(name: "TestSupport", path: "Tests/TestSupport"),
         .testTarget(
             name: "XcodeMigrateTests",
             dependencies: ["XcodeMigrate"]
         ),
         .testTarget(
             name: "XcodeParserTests",
-            dependencies: ["XcodeParser"]
+            dependencies: ["XcodeParser", "TestSupport"]
         ),
-        .testTarget(name: "BazelGeneratorTests", dependencies: ["BazelGenerator"]),
+        .testTarget(name: "BazelGeneratorTests", dependencies: ["BazelGenerator", "TestSupport"]),
     ]
 )

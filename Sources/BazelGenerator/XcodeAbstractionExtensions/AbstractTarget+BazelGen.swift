@@ -1,8 +1,15 @@
 import FoundationExtension
+import PathKit
 import XcodeAbstraction
 
 enum BazelGeneratorAbstractTargetError: Error {
     case unimplemented
+}
+
+extension AbstractTarget {
+    func buildFilePath() -> Path {
+        path + "BUILD.bazel"
+    }
 }
 
 extension AbstractTarget {
