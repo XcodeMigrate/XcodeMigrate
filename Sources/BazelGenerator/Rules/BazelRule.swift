@@ -2,7 +2,7 @@ import XcodeAbstraction
 
 @frozen enum BazelRule {
     case swiftLibrary(name: String, srcs: [String], deps: [String])
-    case iosApplication(name: String, srcs: [String], deps: [String])
+    case iosApplication(name: String, deps: [String])
 }
 
 extension BazelRule {
@@ -24,14 +24,14 @@ extension BazelRule {
             swift_library(
                 name = "\(name)",
                 srcs = \(srcs.toArrayLiteralString()),
-                deps = \(deps.toArrayLiteralString())
+                deps = \(deps.toArrayLiteralString()),
+                visibility = ["//visibility:public"],
             )
             """
-        case let .iosApplication(name, srcs, deps):
+        case let .iosApplication(name, deps):
             return """
             ios_application(
                 name = "\(name)",
-                srcs = \(srcs.toArrayLiteralString()),
                 deps = \(deps.toArrayLiteralString())
             )
             """

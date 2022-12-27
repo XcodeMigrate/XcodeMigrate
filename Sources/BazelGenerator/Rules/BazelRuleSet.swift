@@ -1,5 +1,5 @@
 
-enum BazelRuleSet {
+enum BazelRuleSet: Hashable {
     case swift
     case apple
 }

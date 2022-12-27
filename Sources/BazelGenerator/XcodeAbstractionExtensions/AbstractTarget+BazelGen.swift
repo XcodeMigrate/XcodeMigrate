@@ -49,10 +49,17 @@ private extension AbstractTarget {
     }
 
     func generatePhoneOSApplication() -> [BazelRule] {
-        let sourcePaths = sourceFiles.map { $0.path.string }
+        let prefixString = path.string
+        let sourcePaths = sourceFiles.map { $0.path.string.removePrefix(prefix: prefixString).removePrefix(prefix: "/") }
+
+        let sourceName = "\(name)_source"
+        let mainTargetSource: BazelRule = .swiftLibrary(name: sourceName, srcs: sourcePaths, deps: dependencyLabels)
 
         return [
-            .iosApplication(name: name, srcs: sourcePaths, deps: dependencyLabels),
+            .iosApplication(name: name, deps: [
+                ":\(sourceName)",
+            ]),
+            mainTargetSource,
         ]
     }
 }
