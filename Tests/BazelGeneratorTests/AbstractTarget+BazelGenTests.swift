@@ -12,7 +12,7 @@ final class AbstractTargetPlusBazelGenTests: XCTestCase {
             AbstractSourceFile(path: Path(sourceFile1)),
             AbstractSourceFile(path: Path(sourceFile2)),
         ]
-        let target = AbstractTarget(name: "SampleTarget", productType: .framework, path: Path(targetName), sourceFiles: sourceFiles, dependencies: [])
+        let target = AbstractTarget(name: "SampleTarget", productType: .framework, path: Path(targetName), sourceFiles: sourceFiles, dependencies: [], infoPlistPath: Path("Path/To/Info.plist"))
 
         let swiftBazelLibString = try target.generateRules().map(\.generatedRuleString).joined(separator: "\n")
 
@@ -38,9 +38,9 @@ final class AbstractTargetPlusBazelGenTests: XCTestCase {
             AbstractSourceFile(path: Path(sourceFile1)),
             AbstractSourceFile(path: Path(sourceFile2)),
         ]
-        let dependency1 = AbstractTarget(name: "Dependency1", productType: .framework, path: Path("Dependency1"), sourceFiles: [], dependencies: [])
-        let dependency2 = AbstractTarget(name: "Dependency2", productType: .framework, path: Path("Dependency2"), sourceFiles: [], dependencies: [])
-        let target = AbstractTarget(name: "SampleTarget", productType: .framework, path: Path(targetName), sourceFiles: sourceFiles, dependencies: [dependency1, dependency2])
+        let dependency1 = AbstractTarget(name: "Dependency1", productType: .framework, path: Path("Dependency1"), sourceFiles: [], dependencies: [], infoPlistPath: Path("Path/To/Info.plist"))
+        let dependency2 = AbstractTarget(name: "Dependency2", productType: .framework, path: Path("Dependency2"), sourceFiles: [], dependencies: [], infoPlistPath: Path("Path/To/Info.plist"))
+        let target = AbstractTarget(name: "SampleTarget", productType: .framework, path: Path(targetName), sourceFiles: sourceFiles, dependencies: [dependency1, dependency2], infoPlistPath: Path("Path/To/Info.plist"))
 
         let generaltedRules = try! target.generateRules().map(\.generatedRuleString).joined(separator: "\n")
 

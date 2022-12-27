@@ -9,7 +9,15 @@ import PathKit
 import XcodeAbstraction
 import XcodeProj
 
+enum AbstractTargetCreationError: Error {
+    case noInfoPlist
+}
+
 extension AbstractTarget {
+    private enum Constants {
+        static let infoPlistBuildSettingsKey = "INFOPLIST_FILE"
+    }
+
     init?(from target: PBXNativeTarget, projectRoot: Path) throws {
         let name = target.name
         guard let productType = target.productType else {
@@ -33,6 +41,14 @@ extension AbstractTarget {
         let nativeTargetDependencies = target.dependencies.compactMap { $0.target as? PBXNativeTarget }
         let dependencyTargets = try nativeTargetDependencies.compactMap { try AbstractTarget(from: $0, projectRoot: projectRoot) }
 
-        self.init(name: name, productType: ProductType(from: productType), path: targetPath, sourceFiles: sourceFiles ?? [], dependencies: dependencyTargets)
+        guard let infoPlist = target.buildConfigurationList?.buildConfigurations.first?.buildSettings[Constants.infoPlistBuildSettingsKey] as? String else {
+            throw AbstractTargetCreationError.noInfoPlist
+        }
+        let infoPlistPath = Path(components: [
+            projectRoot.string,
+            infoPlist,
+        ])
+
+        self.init(name: name, productType: ProductType(from: productType), path: targetPath, sourceFiles: sourceFiles ?? [], dependencies: dependencyTargets, infoPlistPath: infoPlistPath)
     }
 }
