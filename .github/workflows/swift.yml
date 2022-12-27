@@ -27,5 +27,11 @@ jobs:
 
       - name: Build
         run: swift build -v
-      - name: Run tests
+      - name: Run tests (Unit)
         run: swift test -v
+
+      - name: Run tests (End to end)
+        run: |
+          brew install bazelisk
+          cd fixtures/basic
+          bazel build //:BasicFixtureProject --sandbox_debug --verbose_failures
