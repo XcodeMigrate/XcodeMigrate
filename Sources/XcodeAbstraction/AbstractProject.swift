@@ -6,11 +6,14 @@
 //
 
 import Foundation
+import PathKit
 
 public struct AbstractProject {
     public let targets: [AbstractTarget]
-
-    public init(targets: [AbstractTarget]) {
+    public let rootPath: Path
+    
+    public init(targets: [AbstractTarget], rootPath: Path) {
         self.targets = targets
+        self.rootPath = rootPath
     }
 }

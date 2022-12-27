@@ -22,7 +22,7 @@ public class XcodeParser {
             try AbstractTarget(from: target, projectRoot: projectRoot)
         }
 
-        abstractProject = AbstractProject(targets: targets)
+        abstractProject = AbstractProject(targets: targets, rootPath: projectRoot)
     }
 }
 

@@ -3,7 +3,15 @@ import PathKit
 import XcodeAbstraction
 
 enum BazelGeneratorAbstractTargetError: Error {
-    case unimplemented
+    case unimplemented(productType: ProductType)
+    
+    
+    var localizedDescription: String {
+        switch self {
+        case .unimplemented(let productType):
+            return "Unimplemented Bazel generation for product type: \(productType)"
+        }
+    }
 }
 
 extension AbstractTarget {
@@ -24,7 +32,7 @@ extension AbstractTarget {
         case .uiTestBundle:
             fallthrough
         default:
-            throw BazelGeneratorAbstractTargetError.unimplemented
+            throw BazelGeneratorAbstractTargetError.unimplemented(productType: productType)
         }
     }
 }

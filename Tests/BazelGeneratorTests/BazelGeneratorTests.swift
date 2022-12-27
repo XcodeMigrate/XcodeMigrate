@@ -11,8 +11,6 @@ final class BazelGeneratorTests: XCTestCase {
 
         let parser = try XcodeParser(projectPath: "\(projectFolder)/fixtures/basic/BasicFixtureProject.xcodeproj")
 
-        print(parser)
-
         try parser.perform()
         try BazelGenerator.generate(from: parser.abstractProject!)
     }

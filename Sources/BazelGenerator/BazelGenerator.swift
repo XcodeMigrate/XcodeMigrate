@@ -1,4 +1,5 @@
 import Foundation
+import PathKit
 import XcodeAbstraction
 
 public enum BazelGenerator {}
@@ -11,14 +12,25 @@ public extension BazelGenerator {
         // Create BUILD files
 
         for target in project.targets {
-            let generatedRules = try target.bazelGen()
-
-            let buildFilePath = target.buildFilePath()
-
-            if fileManager.fileExists(atPath: buildFilePath.string) {
-                try fileManager.removeItem(at: buildFilePath.url)
+            guard let generatedRules = try? target.bazelGen() else {
+                // TODO: Test all supported product types
+                continue
             }
 
+            let buildFilePath = target.buildFilePath()
+            let normalizedBuildFilePath: Path = {
+                if buildFilePath.isAbsolute {
+                    return buildFilePath
+                } else {
+                    return project.rootPath + buildFilePath
+                }
+            }()
+
+            if fileManager.fileExists(atPath: normalizedBuildFilePath.string) {
+                try fileManager.removeItem(at: normalizedBuildFilePath.url)
+            }
+
+            fileManager.createFile(atPath: normalizedBuildFilePath.string, contents: nil, attributes: nil)
             try generatedRules.write(to: buildFilePath.url, atomically: true, encoding: .utf8)
         }
     }
