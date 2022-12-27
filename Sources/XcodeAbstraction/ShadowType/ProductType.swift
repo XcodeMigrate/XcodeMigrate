@@ -1,3 +1,6 @@
+/// Shadow Type of `PBXProductType`
+///
+/// We don't want `XcodeAbstraction` to depend on `XcodeProj`.
 public enum ProductType: String, Decodable {
     case none = ""
     case application = "com.apple.product-type.application"

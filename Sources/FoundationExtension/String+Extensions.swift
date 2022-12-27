@@ -18,6 +18,15 @@ public extension String {
 
         return prefix
     }
+
+    func removePrefix(prefix: String) -> String {
+        if hasPrefix(prefix) {
+            let index = index(startIndex, offsetBy: prefix.count)
+            return String(self[index...])
+        } else {
+            return self
+        }
+    }
 }
 
 public extension Array where Element == String {

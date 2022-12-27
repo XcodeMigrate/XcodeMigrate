@@ -38,7 +38,10 @@ extension AbstractTarget {
 
 private extension AbstractTarget {
     func generateFramework() -> [BazelRule] {
-        let sourcePaths = sourceFiles.map { $0.path.string }
+        let prefixString = path.string
+        let sourcePaths = sourceFiles.map { sourceFile in
+            sourceFile.path.string.removePrefix(prefix: prefixString).removePrefix(prefix: "/")
+        }
 
         return [
             .swiftLibrary(name: name, srcs: sourcePaths, deps: dependencyLabels),
