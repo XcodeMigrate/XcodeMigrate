@@ -37,4 +37,17 @@ extension BazelRule {
             """
         }
     }
+
+    var ruleLoadingString: String {
+        switch self {
+        case .swiftLibrary:
+            return """
+            load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
+            """
+        case .iosApplication:
+            return """
+            load("@build_bazel_rules_apple//apple:ios.bzl", "ios_application")
+            """
+        }
+    }
 }

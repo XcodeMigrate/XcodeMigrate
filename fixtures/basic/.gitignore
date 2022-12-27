@@ -72,3 +72,5 @@ Tuist/Dependencies
 BUILD.bazel
 BUILD.bzl
 WORKSPACE
+
+bazel-*

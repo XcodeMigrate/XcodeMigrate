@@ -10,18 +10,23 @@ public extension BazelGenerator {
 
         // Create BUILD files
 
-        var ruleSets: Set<BazelRuleSet> = []
+        var ruleSet: Set<BazelRuleSet> = []
         for target in project.targets {
             guard let generatedRules = try? target.generateRules() else {
                 // TODO: Test all supported product types
                 continue
             }
+            var ruleLoadingStrings: Set<String> = []
             var ruleStrings: [String] = []
             for generatedRule in generatedRules {
-                ruleSets.insert(generatedRule.ruleSet)
+                ruleSet.insert(generatedRule.ruleSet)
+                ruleLoadingStrings.insert(generatedRule.ruleLoadingString)
 
                 ruleStrings.append(generatedRule.generatedRuleString)
             }
+
+            let loadingStatements = ruleLoadingStrings.joined(separator: "\n")
+            let loadingStatementsAndRules = loadingStatements + "\n" + ruleStrings.joined(separator: "\n")
 
             let buildFilePath = target.buildFilePath()
             let normalizedBuildFilePath: Path = {
@@ -36,11 +41,11 @@ public extension BazelGenerator {
                 try fileManager.removeItem(at: normalizedBuildFilePath.url)
             }
 
-            fileManager.createFile(atPath: normalizedBuildFilePath.string, contents: ruleStrings.joined(separator: "\n").data(using: .utf8), attributes: nil)
+            fileManager.createFile(atPath: normalizedBuildFilePath.string, contents: loadingStatementsAndRules.data(using: .utf8), attributes: nil)
         }
 
         // Create WORKSPACE
-        let workspaceRuleSetStrings = ruleSets.map(\.workspaceContent)
+        let workspaceRuleSetStrings = ruleSet.map(\.workspaceContent)
 
         let httpArchive = """
         load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
