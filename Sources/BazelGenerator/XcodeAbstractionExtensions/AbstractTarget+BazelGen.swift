@@ -4,11 +4,10 @@ import XcodeAbstraction
 
 enum BazelGeneratorAbstractTargetError: Error {
     case unimplemented(productType: ProductType)
-    
-    
+
     var localizedDescription: String {
         switch self {
-        case .unimplemented(let productType):
+        case let .unimplemented(productType):
             return "Unimplemented Bazel generation for product type: \(productType)"
         }
     }
