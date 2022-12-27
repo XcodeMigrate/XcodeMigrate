@@ -22,10 +22,16 @@ jobs:
       - name: Install dependencies
         run: cd fixtures && make prepare
 
-      - name: Generated fixtures
+      - name: Generat fixtures
         run: cd fixtures && make generate
 
       - name: Build
-        run: swift build -v
-      - name: Run tests
-        run: swift test -v
+        run: swift build
+      - name: Run tests (Unit)
+        run: swift test
+
+      - name: Run tests (End to end)
+        run: |
+          brew install bazelisk
+          cd fixtures/basic
+          bazel build //:BasicFixtureProject --sandbox_debug --verbose_failures

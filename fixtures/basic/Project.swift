@@ -1,6 +1,6 @@
+import MyPlugin
 import ProjectDescription
 import ProjectDescriptionHelpers
-import MyPlugin
 
 /*
                 +-------------+

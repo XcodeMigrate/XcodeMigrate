@@ -68,3 +68,9 @@ Derived/
 
 ### Tuist managed dependencies ###
 Tuist/Dependencies
+
+BUILD.bazel
+BUILD.bzl
+WORKSPACE
+
+bazel-*
