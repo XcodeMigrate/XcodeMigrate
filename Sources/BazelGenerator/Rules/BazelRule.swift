@@ -2,7 +2,7 @@ import XcodeAbstraction
 
 @frozen enum BazelRule {
     case swiftLibrary(name: String, srcs: [String], deps: [String], moduleName: String)
-    case iosApplication(name: String, deps: [String], infoplists: [String])
+    case iosApplication(name: String, deps: [String], infoplists: [String], minimumOSVersion: String, deviceFamilies: [BazelRule.DeviceFamily])
     case iosFramework(name: String, deps: [String], bundleID: String, minimumOSVersion: String, deviceFamilies: [BazelRule.DeviceFamily], infoPlists: [String])
     case filegroup(name: String, srcs: [String])
 }
@@ -35,12 +35,16 @@ extension BazelRule {
                 visibility = ["//visibility:public"],
             )
             """
-        case let .iosApplication(name, deps, infoplists):
+        case let .iosApplication(name, deps, infoplists, minimumOSVersion, deviceFamilies):
+            // TODO: Fix bundle id parsing
             return """
             ios_application(
                 name = "\(name)",
                 deps = \(deps.toArrayLiteralString()),
-                infoplists = \(infoplists.toArrayLiteralString())
+                bundle_id = "demo.app.\(name)",
+                infoplists = \(infoplists.toArrayLiteralString()),
+                minimum_os_version = "\(minimumOSVersion)",
+                families = \(deviceFamilies.map(\.rawValue).toArrayLiteralString())
             )
             """
         case let .iosFramework(name, deps, bundleID, minimumOSVersion, deviceFamilies, infoPlists):

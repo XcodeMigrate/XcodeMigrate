@@ -81,7 +81,9 @@ private extension AbstractTarget {
         let mainTargetSource: BazelRule = .swiftLibrary(
             name: sourceName,
             srcs: sourcePaths,
-            deps: dependencyLabels.map { $0 + AbstractTargetBazelGenConstants.frameworkLibSuffix },
+            deps: dependencyLabels.map { dependencyLabel in
+                dependencyLabel + AbstractTargetBazelGenConstants.frameworkLibSuffix
+            },
             moduleName: name
         )
 
@@ -96,10 +98,15 @@ private extension AbstractTarget {
 
         return [
             CreateBuildFileOperation(targetPath: applicationBuildFilePath, rules: [
-                .iosApplication(name: name, deps: [
-                    ":\(sourceName)",
-                ] + dependencyLabels,
-                infoplists: [infoPlistLabelFromCurrentTarget]),
+                .iosApplication(
+                    name: name,
+                    deps: [
+                        ":\(sourceName)",
+                    ] + dependencyLabels,
+                    infoplists: [infoPlistLabelFromCurrentTarget],
+                    minimumOSVersion: "13.0", // TODO: Parse deployment target
+                    deviceFamilies: [.iphone] // TODO: Parse device family
+                ),
                 mainTargetSource,
             ]),
             CreateBuildFileOperation(targetPath: infoPlistBuildFilePath, rules: [
@@ -119,7 +126,7 @@ private extension AbstractTarget {
                 dependency.path.string,
             ])
             let dependencyLabelWithOutCommonPath = dependency.path.string[commonPathPrefix.endIndex...]
-            return "/\(dependencyLabelWithOutCommonPath)"
+            return "/\(dependencyLabelWithOutCommonPath):\(dependency.name)"
         }
     }
 }
