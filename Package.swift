@@ -5,6 +5,11 @@ import PackageDescription
 
 let package = Package(
     name: "XcodeMigrate",
+    products: [
+        .executable(name: "xcode-migrate", targets: [
+            "XcodeMigrate",
+        ]),
+    ],
     dependencies: [
         .package(url: "https://github.com/tuist/XcodeProj.git", .upToNextMajor(from: "8.8.0")),
         .package(url: "https://github.com/kylef/PathKit.git", .upToNextMajor(from: "1.0.1")),
