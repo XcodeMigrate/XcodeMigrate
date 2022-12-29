@@ -29,20 +29,31 @@ jobs:
       - uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: latest-stable
-
       - name: Install dependencies
         run: cd fixtures && make prepare
-
-      - name: Generat fixtures
+      - name: Generate fixtures
         run: cd fixtures && make generate
-
       - name: Build
         run: swift build
       - name: Run tests (Unit)
         run: swift test
 
-      - name: Run tests (End to end)
+  end-to-end-testing:
+    runs-on: macos-12
+    steps:
+      - uses: actions/checkout@v3
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+      - name: Install dependencies
+        run: cd fixtures && make prepare
+      - name: Generate fixtures
+        run: cd fixtures && make generate
+      - name: Build (debug)
+        run: swift build -c debug
+      - name: Run E2E tests
         run: |
           brew install bazelisk
           cd fixtures/basic
+          ../../.build/debug/XcodeMigrate bazel -p ./BasicFixtureProject.xcodeproj
           bazel build //:BasicFixtureProject --sandbox_debug --verbose_failures

@@ -10,11 +10,7 @@ public enum BazelGenerator {}
 public extension BazelGenerator {
     static func generate(from project: AbstractProject) throws {
         let fileManager = FileManager.default
-
-        // Create BUILD files
-
         var globalRuleSet: Set<BazelRuleSet> = []
-
         var buildFileOperations: [Path: [CreateBuildFileOperation]] = [:]
 
         for target in project.targets {
@@ -32,7 +28,6 @@ public extension BazelGenerator {
             }
         }
 
-        // Create WORKSPACE
         let workspaceRuleSetStrings = globalRuleSet.map(\.workspaceContent)
 
         let httpArchive = """
