@@ -33,7 +33,7 @@ mint run xcode-migrate generate -p /path/to/your.xcodeproj
 ```
 
 At current stage, `xcode-migrate` only supports generating Bazel files for iOS projects with Swift only frameworks.
-You can try the testing project under [fixtures](https://github.com/XcodeMigrate/XcodeMigrate/tree/main/fixtures) directory.
+You can try the testing project under [fixtures](https://github.com/XcodeMigrate/XcodeMigrate/tree/main/fixtures) directory. There is an example in [.github/workflows/swift.yml](https://github.com/XcodeMigrate/XcodeMigrate/blob/main/.github/workflows/swift.yml).
 
 ## Design
 
