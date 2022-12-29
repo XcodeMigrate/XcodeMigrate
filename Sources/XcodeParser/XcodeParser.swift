@@ -10,7 +10,9 @@ public class XcodeParser {
     public private(set) var abstractProject: AbstractProject?
 
     public init(projectPath: String) throws {
-        let path = Path(projectPath)
+        let inputPath = Path(projectPath)
+        let path = inputPath.isAbsolute ? inputPath : Path.current + inputPath
+
         projectRoot = path.parent()
         project = try XcodeProj(path: path)
     }
