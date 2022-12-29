@@ -55,5 +55,5 @@ jobs:
         run: |
           brew install bazelisk
           cd fixtures/basic
-          ../../.build/debug/XcodeMigrate bazel -p ./BasicFixtureProject.xcodeproj
+          ../../.build/debug/xcode-migrate bazel -p ./BasicFixtureProject.xcodeproj
           bazel build //:BasicFixtureProject --sandbox_debug --verbose_failures
