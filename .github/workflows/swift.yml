@@ -45,6 +45,8 @@ jobs:
         run: cd fixtures && make prepare
       - name: Generate fixtures
         run: cd fixtures && make generate
+      - name: Build (debug)
+        run: swift build -c debug
       - name: Run E2E tests
         run: |
           brew install bazelisk
