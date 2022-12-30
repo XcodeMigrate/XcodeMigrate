@@ -66,7 +66,7 @@ private extension AbstractTarget {
         return [
             CreateBuildFileOperation(targetPath: buildFilePath(rootPath: rootPath), rules: [
                 .swiftLibrary(name: swiftLibraryName, srcs: sourcePaths, deps: dependencyLabels, moduleName: name),
-                .iosFramework(name: name, deps: [":\(swiftLibraryName)"], bundleID: "to.do.\(name)", minimumOSVersion: "13.0", deviceFamilies: [.iphone], infoPlists: [infoPlistLabelFromCurrentTarget]),
+                .iosFramework(name: name, deps: [":\(swiftLibraryName)"], bundleID: "to.do.\(name)", minimumOSVersion: deploymentTarget.iOS ?? "13.0", deviceFamilies: [.iphone], infoPlists: [infoPlistLabelFromCurrentTarget]),
             ]),
             CreateBuildFileOperation(targetPath: infoPlistBuildFilePath, rules: [
                 .filegroup(name: infoPlistLabel, srcs: [
@@ -110,7 +110,7 @@ private extension AbstractTarget {
                         ":\(sourceName)",
                     ] + dependencyLabels,
                     infoplists: [infoPlistLabelFromCurrentTarget],
-                    minimumOSVersion: "13.0", // TODO: Parse deployment target (<https://github.com/XcodeMigrate/XcodeMigrate/issues/7>)
+                    minimumOSVersion: deploymentTarget.iOS ?? "13.0",
                     deviceFamilies: [.iphone] // TODO: Parse device family (<https://github.com/XcodeMigrate/XcodeMigrate/issues/8>)
                 ),
                 mainTargetSource,
