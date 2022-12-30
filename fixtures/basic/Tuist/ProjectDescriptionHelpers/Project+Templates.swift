@@ -53,7 +53,7 @@ extension Project {
             "CFBundleShortVersionString": "1.0",
             "CFBundleVersion": "1",
             "UIMainStoryboardFile": "",
-            "UILaunchStoryboardName": "LaunchScreen"
+            "UILaunchStoryboardName": "LaunchScreen",
         ]
 
         let mainTarget = Target(
@@ -77,7 +77,7 @@ extension Project {
             infoPlist: .default,
             sources: ["Targets/\(name)/Tests/**"],
             dependencies: [
-                .target(name: "\(name)")
+                .target(name: "\(name)"),
             ]
         )
         return [mainTarget, testTarget]
