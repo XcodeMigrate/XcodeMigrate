@@ -28,7 +28,7 @@ let package = Package(
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ]
         ),
-        .target(name: "XcodeParser", dependencies: ["XcodeProj", "XcodeAbstraction", "FoundationExtension"]),
+        .target(name: "XcodeParser", dependencies: ["Common", "XcodeProj", "XcodeAbstraction", "FoundationExtension"]),
         .target(name: "BazelGenerator", dependencies: ["XcodeAbstraction", "PathKit", "XcodeParser", "Common"]),
 
         // Intermediate Abstraction of Xcode Project without dependening on `XcodeProj`
