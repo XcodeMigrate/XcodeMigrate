@@ -1,6 +1,9 @@
+import Common
 import PathKit
 import XcodeAbstraction
 import XcodeProj
+
+let logger = Logger(label: "XcodeParser")
 
 public class XcodeParser {
     let project: XcodeProj

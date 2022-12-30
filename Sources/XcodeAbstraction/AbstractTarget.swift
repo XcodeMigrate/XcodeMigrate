@@ -14,13 +14,15 @@ public struct AbstractTarget {
     public let sourceFiles: [AbstractSourceFile]
     public let dependencies: [AbstractTarget]
     public let infoPlistPath: Path
+    public let deploymentTarget: DeploymentTarget
 
-    public init(name: String, productType: ProductType, path: Path, sourceFiles: [AbstractSourceFile], dependencies: [AbstractTarget], infoPlistPath: Path) {
+    public init(name: String, productType: ProductType, path: Path, sourceFiles: [AbstractSourceFile], dependencies: [AbstractTarget], infoPlistPath: Path, deploymentTarget: DeploymentTarget) {
         self.name = name
         self.productType = productType
         self.path = path
         self.sourceFiles = sourceFiles
         self.dependencies = dependencies
         self.infoPlistPath = infoPlistPath
+        self.deploymentTarget = deploymentTarget
     }
 }
