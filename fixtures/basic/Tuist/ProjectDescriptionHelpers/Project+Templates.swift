@@ -6,6 +6,10 @@ import ProjectDescription
 /// See https://docs.tuist.io/guides/helpers/
 
 extension Project {
+    private enum Constants {
+        static let deploymentTarget: DeploymentTarget = .iOS(targetVersion: "13.0", devices: [.iphone, .ipad])
+    }
+
     /// Helper function to create the Project for this ExampleApp
     public static func app(name: String, platform: Platform, additionalTargets: [String]) -> Project {
         var targets = makeAppTargets(name: name,
@@ -25,6 +29,7 @@ extension Project {
                              platform: platform,
                              product: .framework,
                              bundleId: "io.tuist.\(name)",
+                             deploymentTarget: Constants.deploymentTarget,
                              infoPlist: .default,
                              sources: ["Targets/\(name)/Sources/**"],
                              resources: [],
@@ -33,6 +38,7 @@ extension Project {
                            platform: platform,
                            product: .unitTests,
                            bundleId: "io.tuist.\(name)Tests",
+                           deploymentTarget: Constants.deploymentTarget,
                            infoPlist: .default,
                            sources: ["Targets/\(name)/Tests/**"],
                            resources: [],
@@ -47,7 +53,7 @@ extension Project {
             "CFBundleShortVersionString": "1.0",
             "CFBundleVersion": "1",
             "UIMainStoryboardFile": "",
-            "UILaunchStoryboardName": "LaunchScreen",
+            "UILaunchStoryboardName": "LaunchScreen"
         ]
 
         let mainTarget = Target(
@@ -55,6 +61,7 @@ extension Project {
             platform: platform,
             product: .app,
             bundleId: "io.tuist.\(name)",
+            deploymentTarget: Constants.deploymentTarget,
             infoPlist: .extendingDefault(with: infoPlist),
             sources: ["Targets/\(name)/Sources/**"],
             resources: ["Targets/\(name)/Resources/**"],
@@ -66,10 +73,11 @@ extension Project {
             platform: platform,
             product: .unitTests,
             bundleId: "io.tuist.\(name)Tests",
+            deploymentTarget: Constants.deploymentTarget,
             infoPlist: .default,
             sources: ["Targets/\(name)/Tests/**"],
             dependencies: [
-                .target(name: "\(name)"),
+                .target(name: "\(name)")
             ]
         )
         return [mainTarget, testTarget]
