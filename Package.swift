@@ -30,13 +30,15 @@ let package = Package(
             ]
         ),
         .target(name: "XcodeParser", dependencies: ["Common", "XcodeProj", "XcodeAbstraction", "FoundationExtension"]),
-        .target(name: "BazelGenerator", dependencies: ["XcodeAbstraction", "PathKit", "XcodeParser", "Common"]),
+        .target(name: "BazelGenerator", dependencies: ["XcodeAbstraction", "PathKit", "XcodeParser", "Common", "BazelRenderingKit"]),
 
         // Intermediate Abstraction of Xcode Project without dependening on `XcodeProj`
         .target(name: "XcodeAbstraction", dependencies: ["FoundationExtension", "PathKit"]),
 
         .target(name: "FoundationExtension"),
-        .target(name: "BazelRenderingKit"),
+        .target(name: "BazelRenderingKit", dependencies: [
+            .product(name: "Collections", package: "swift-collections"),
+        ]),
 
         .target(name: "Common", dependencies: [
             .product(name: "Logging", package: "swift-log"),
@@ -54,7 +56,6 @@ let package = Package(
         .testTarget(name: "BazelRenderingKitTests", dependencies: [
             "BazelRenderingKit",
             "TestSupport",
-            .product(name: "Collections", package: "swift-collections"),
         ]),
     ]
 )
