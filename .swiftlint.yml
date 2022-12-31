@@ -3,10 +3,11 @@ included:
   - Source
   - Tests
 excluded:
-  - Tests/SwiftLintFrameworkTests/Resources
 analyzer_rules:
   - unused_declaration
   - unused_import
+disabled_rules:
+  - file_header
 opt_in_rules:
   - array_init
   - attributes
@@ -89,5 +90,5 @@ file_name:
 function_body_length: 60
 type_body_length: 400
 line_length: 999
-file_header:
-  required_string: |
+trailing_comma:
+  mandatory_comma: true
