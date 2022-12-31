@@ -1,4 +1,4 @@
-@testable import BazelKit
+@testable import BazelRenderingKit
 import Foundation
 import XCTest
 

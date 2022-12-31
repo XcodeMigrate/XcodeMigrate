@@ -36,7 +36,7 @@ let package = Package(
         .target(name: "XcodeAbstraction", dependencies: ["FoundationExtension", "PathKit"]),
 
         .target(name: "FoundationExtension"),
-        .target(name: "BazelKit"),
+        .target(name: "BazelRenderingKit"),
 
         .target(name: "Common", dependencies: [
             .product(name: "Logging", package: "swift-log"),
@@ -51,8 +51,8 @@ let package = Package(
             dependencies: ["XcodeParser", "TestSupport"]
         ),
         .testTarget(name: "BazelGeneratorTests", dependencies: ["BazelGenerator", "TestSupport"]),
-        .testTarget(name: "BazelKitTests", dependencies: [
-            "BazelKit",
+        .testTarget(name: "BazelRenderingKitTests", dependencies: [
+            "BazelRenderingKit",
             "TestSupport",
             .product(name: "Collections", package: "swift-collections"),
         ]),
