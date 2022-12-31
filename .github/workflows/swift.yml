@@ -18,7 +18,16 @@ jobs:
       - uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: latest-stable
-
+      - name: Format
+        run: |
+          swiftformat --verbose .
+          git diff --exit-code
+          if [ $? -eq 0 ]; then
+            echo "No changes after formatting"
+          else
+            echo "Changes after formatting. Please run swiftformat locally and commit changes."
+            exit 1
+          fi
       - name: Lint
         run: swiftlint lint --strict
   build:
