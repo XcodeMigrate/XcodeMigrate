@@ -1,4 +1,4 @@
-@testable import XcodeMigrate
+// @testable import XcodeMigrate
 import XCTest
 
 final class XcodeMigrateTests: XCTestCase {

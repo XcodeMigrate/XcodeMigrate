@@ -1,7 +1,7 @@
 import Foundation
 
-public extension Collection where Element: AttributeContentConvertible {
-  func toAttributeContent() -> String {
-    return "[" + map { "\"\($0.toAttributeContent())\"" }.joined(separator: ",") + "]"
-  }
+extension Array: AttributeContentConvertible where Element: AttributeContentConvertible {
+    public func toAttributeContent() -> String {
+        return "[" + map { $0.toAttributeContent() }.joined(separator: ",") + "]"
+    }
 }
