@@ -1,5 +1,5 @@
 //
-// BazelGeneratorTests.swift
+// GeneratorConfig.swift
 // Copyright (c) 2023 Daohan Chong and other XcodeMigrate authors.
 // MIT License.
 //
@@ -9,22 +9,10 @@
 // THE SOFTWARE IS PROVIDED  AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-@testable import BazelGenerator
-import PathKit
-import TestSupport
-@testable import XcodeAbstraction
-@testable import XcodeParser
-import XCTest
+public struct GeneratorConfig: Codable {
+    public var formatCode: Bool
 
-final class BazelGeneratorTests: XCTestCase {
-    func testBazelGenerator() throws {
-        let projectFolder = SwiftProjectPath.projectFolder()
-
-        let parser = try XcodeParser(projectPath: "\(projectFolder)/fixtures/basic/BasicFixtureProject.xcodeproj")
-
-        try parser.perform()
-
-        let generatorConfig = GeneratorConfig(formatCode: true)
-        try BazelGenerator.generate(from: parser.abstractProject!, config: generatorConfig)
+    public init(formatCode: Bool) {
+        self.formatCode = formatCode
     }
 }

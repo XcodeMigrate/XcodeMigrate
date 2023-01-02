@@ -19,7 +19,19 @@ let logger = Logger(label: "BazelGenerator")
 public enum BazelGenerator {}
 
 public extension BazelGenerator {
-    static func generate(from project: AbstractProject) throws {
+    // private enum Constants {
+    //     static let applicationPathAppleSilicon = "/opt/homebrew/bin/buildifier"
+    //     static let applicationPathIntel = "/usr/local/bin/buildifier"
+    // }
+
+    static func generate(from project: AbstractProject, config: GeneratorConfig) throws {
+        var formatterPath = findBuildifierPath()
+        if formatterPath == nil, config.formatCode {
+            logger.warning("buildifier is not installed. Please install it using `brew install buildifier`")
+        } else if formatterPath != nil, !config.formatCode {
+            formatterPath = nil
+        }
+
         let fileManager = FileManager.default
         var globalRuleSet: Set<BazelRuleSet> = []
         var buildFileOperations: [Path: [CreateBuildFileOperation]] = [:]
@@ -54,12 +66,12 @@ public extension BazelGenerator {
 
         fileManager.createFile(atPath: workspaceFilePath.string, contents: workspaceString.data(using: .utf8), attributes: nil)
 
-        try generateBuildFiles(fileManager: fileManager, operationMapping: buildFileOperations)
+        try generateBuildFiles(fileManager: fileManager, operationMapping: buildFileOperations, formatterPath: formatterPath)
     }
 }
 
 private extension BazelGenerator {
-    static func generateBuildFiles(fileManager: FileManager, operationMapping: [Path: [CreateBuildFileOperation]]) throws {
+    static func generateBuildFiles(fileManager: FileManager, operationMapping: [Path: [CreateBuildFileOperation]], formatterPath: Path?) throws {
         for (path, operations) in operationMapping {
             let mergedRuleLoadingStatements = CreateBuildFileOperation.aggregatedLoadingStatements(of: operations).joined(separator: "\n")
             let allRules = operations.map(\.allRules).joined(separator: "\n")
@@ -71,6 +83,31 @@ private extension BazelGenerator {
             let fullContent = mergedRuleLoadingStatements + "\n" + allRules
 
             fileManager.createFile(atPath: path.string, contents: fullContent.data(using: .utf8))
+
+            if let formatterPath = formatterPath {
+                invokeFormatter(buildifierPath: formatterPath, filePath: path.string)
+            }
         }
+    }
+
+    static func invokeFormatter(buildifierPath: Path, filePath: String) {
+        let process = Process()
+        process.launchPath = buildifierPath.string
+        process.arguments = [filePath]
+        process.launch()
+        process.waitUntilExit()
+    }
+
+    static func findBuildifierPath() -> Path? {
+        if let path = ProcessInfo.processInfo.environment["PATH"] {
+            let paths = path.split(separator: ":")
+            for path in paths {
+                let buildifierPath = Path(String(path)) + "buildifier"
+                if buildifierPath.exists {
+                    return buildifierPath
+                }
+            }
+        }
+        return nil
     }
 }
