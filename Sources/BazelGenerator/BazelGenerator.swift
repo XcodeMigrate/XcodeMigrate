@@ -19,11 +19,6 @@ let logger = Logger(label: "BazelGenerator")
 public enum BazelGenerator {}
 
 public extension BazelGenerator {
-    // private enum Constants {
-    //     static let applicationPathAppleSilicon = "/opt/homebrew/bin/buildifier"
-    //     static let applicationPathIntel = "/usr/local/bin/buildifier"
-    // }
-
     static func generate(from project: AbstractProject, config: GeneratorConfig) throws {
         var formatterPath = findBuildifierPath()
         if formatterPath == nil, config.formatCode {
