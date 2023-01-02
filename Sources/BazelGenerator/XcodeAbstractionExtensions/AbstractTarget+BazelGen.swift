@@ -1,6 +1,6 @@
 //
 // AbstractTarget+BazelGen.swift
-// Copyright (c) 2022 Daohan Chong and other XcodeMigrate authors.
+// Copyright (c) 2023 Daohan Chong and other XcodeMigrate authors.
 // MIT License.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the  Software), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -77,7 +77,7 @@ private extension AbstractTarget {
         return [
             CreateBuildFileOperation(targetPath: buildFilePath(rootPath: rootPath), rules: [
                 .swiftLibrary(name: swiftLibraryName, srcs: sourcePaths, deps: dependencyLabels, moduleName: name),
-                .iosFramework(name: name, deps: [":\(swiftLibraryName)"], bundleID: "to.do.\(name)", minimumOSVersion: deploymentTarget.iOS ?? "13.0", deviceFamilies: [.iphone], infoPlists: [infoPlistLabelFromCurrentTarget]),
+                .iosFramework(name: name, deps: [":\(swiftLibraryName)"], bundleID: bundleIdentifier, minimumOSVersion: deploymentTarget.iOS ?? "13.0", deviceFamilies: [.iphone], infoPlists: [infoPlistLabelFromCurrentTarget]),
             ]),
             CreateBuildFileOperation(targetPath: infoPlistBuildFilePath, rules: [
                 .filegroup(name: infoPlistLabel, srcs: [
@@ -120,6 +120,7 @@ private extension AbstractTarget {
                     deps: [
                         ":\(sourceName)",
                     ] + dependencyLabels,
+                    bundleID: bundleIdentifier,
                     infoplists: [infoPlistLabelFromCurrentTarget],
                     minimumOSVersion: deploymentTarget.iOS ?? "13.0",
                     deviceFamilies: [.iphone] // TODO: Parse device family (<https://github.com/XcodeMigrate/XcodeMigrate/issues/8>)

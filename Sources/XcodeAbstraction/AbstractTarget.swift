@@ -1,6 +1,6 @@
 //
 // AbstractTarget.swift
-// Copyright (c) 2022 Daohan Chong and other XcodeMigrate authors.
+// Copyright (c) 2023 Daohan Chong and other XcodeMigrate authors.
 // MIT License.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the  Software), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -14,15 +14,17 @@ import PathKit
 public struct AbstractTarget {
     public let name: String
     public let productType: ProductType
+    public let bundleIdentifier: String
     public let path: Path
     public let sourceFiles: [AbstractSourceFile]
     public let dependencies: [AbstractTarget]
     public let infoPlistPath: Path
     public let deploymentTarget: DeploymentTarget
 
-    public init(name: String, productType: ProductType, path: Path, sourceFiles: [AbstractSourceFile], dependencies: [AbstractTarget], infoPlistPath: Path, deploymentTarget: DeploymentTarget) {
+    public init(name: String, productType: ProductType, bundleIdentifier: String, path: Path, sourceFiles: [AbstractSourceFile], dependencies: [AbstractTarget], infoPlistPath: Path, deploymentTarget: DeploymentTarget) {
         self.name = name
         self.productType = productType
+        self.bundleIdentifier = bundleIdentifier
         self.path = path
         self.sourceFiles = sourceFiles
         self.dependencies = dependencies
