@@ -39,7 +39,8 @@ struct XcodeMigrate: ParsableCommand {
             fatalError("Cannot parse project")
         }
 
-        try BazelGenerator.generate(from: abstractProject)
+        let generatorConfig = GeneratorConfig(formatCode: true)
+        try BazelGenerator.generate(from: abstractProject, config: generatorConfig)
 
         logger.info("Bazel project generated at: \(project)")
     }
