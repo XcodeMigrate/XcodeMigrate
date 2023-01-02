@@ -1,6 +1,6 @@
 //
 // BazelRule.swift
-// Copyright (c) 2022 Daohan Chong and other XcodeMigrate authors.
+// Copyright (c) 2023 Daohan Chong and other XcodeMigrate authors.
 // MIT License.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the  Software), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -13,7 +13,7 @@ import XcodeAbstraction
 
 @frozen enum BazelRule: Hashable {
     case swiftLibrary(name: String, srcs: [String], deps: [String], moduleName: String)
-    case iosApplication(name: String, deps: [String], infoplists: [String], minimumOSVersion: String, deviceFamilies: [BazelRule.DeviceFamily])
+    case iosApplication(name: String, deps: [String], bundleID: String, infoplists: [String], minimumOSVersion: String, deviceFamilies: [BazelRule.DeviceFamily])
     case iosFramework(name: String, deps: [String], bundleID: String, minimumOSVersion: String, deviceFamilies: [BazelRule.DeviceFamily], infoPlists: [String])
     case filegroup(name: String, srcs: [String])
 }

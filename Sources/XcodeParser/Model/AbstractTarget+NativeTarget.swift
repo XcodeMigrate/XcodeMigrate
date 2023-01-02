@@ -1,6 +1,6 @@
 //
 // AbstractTarget+NativeTarget.swift
-// Copyright (c) 2022 Daohan Chong and other XcodeMigrate authors.
+// Copyright (c) 2023 Daohan Chong and other XcodeMigrate authors.
 // MIT License.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the  Software), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -21,6 +21,7 @@ extension AbstractTarget {
     private enum Constants {
         static let infoPlistBuildSettingsKey = "INFOPLIST_FILE"
         static let iphoneOSDeploymentTargetKey = "IPHONEOS_DEPLOYMENT_TARGET"
+        static let productBundleIdentifierKey = "PRODUCT_BUNDLE_IDENTIFIER"
     }
 
     init?(from target: PBXNativeTarget, projectRoot: Path) throws {
@@ -72,11 +73,21 @@ extension AbstractTarget {
             iPhoneDeploymentTarget = nil
             logger.warning("Cannot find \(Constants.iphoneOSDeploymentTargetKey) for target \(name)")
         }
+
+        let bundleID: String
+        if let bundleIDFromBuildConfiguration = target.buildConfigurationList?.buildConfigurations.first?.buildSettings[Constants.productBundleIdentifierKey] as? String {
+            bundleID = bundleIDFromBuildConfiguration
+        } else {
+            bundleID = "not.found.bundle.id.\(target.name)"
+            logger.warning("Cannot find \(Constants.productBundleIdentifierKey) for target \(name), using \(bundleID)")
+        }
+
         let deploymentTarget = DeploymentTarget(iOS: iPhoneDeploymentTarget)
 
         self.init(
             name: name,
             productType: ProductType(from: productType),
+            bundleIdentifier: bundleID,
             path: normalizedTargetPath,
             sourceFiles: sourceFiles ?? [],
             dependencies: dependencyTargets,
