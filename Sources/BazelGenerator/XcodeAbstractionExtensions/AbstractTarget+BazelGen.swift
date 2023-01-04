@@ -147,7 +147,7 @@ private extension AbstractTarget {
             return "/\(dependencyLabelWithOutCommonPath):\(dependency.name)"
         }
     }
-    
+
     var deviceFamilies: [BazelRule.DeviceFamily] {
         var families: [BazelRule.DeviceFamily] = []
         if targetDevice.contains(.iphone) {
