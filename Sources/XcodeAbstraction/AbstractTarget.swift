@@ -20,8 +20,9 @@ public struct AbstractTarget {
     public let dependencies: [AbstractTarget]
     public let infoPlistPath: Path
     public let deploymentTarget: DeploymentTarget
+    public let targetDevice: TargetDevice
 
-    public init(name: String, productType: ProductType, bundleIdentifier: String, path: Path, sourceFiles: [AbstractSourceFile], dependencies: [AbstractTarget], infoPlistPath: Path, deploymentTarget: DeploymentTarget) {
+    public init(name: String, productType: ProductType, bundleIdentifier: String, path: Path, sourceFiles: [AbstractSourceFile], dependencies: [AbstractTarget], infoPlistPath: Path, deploymentTarget: DeploymentTarget, targetDevice: TargetDevice) {
         self.name = name
         self.productType = productType
         self.bundleIdentifier = bundleIdentifier
@@ -30,5 +31,6 @@ public struct AbstractTarget {
         self.dependencies = dependencies
         self.infoPlistPath = infoPlistPath
         self.deploymentTarget = deploymentTarget
+        self.targetDevice = targetDevice
     }
 }
