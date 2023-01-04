@@ -32,7 +32,8 @@ final class AbstractTargetPlusBazelGenTests: XCTestCase {
             sourceFiles: sourceFiles,
             dependencies: [],
             infoPlistPath: sampleRootPath + Path("Path/To/Info.plist"),
-            deploymentTarget: DeploymentTarget(iOS: "13.0")
+            deploymentTarget: DeploymentTarget(iOS: "13.0"),
+            targetDevice: [.iphone, .ipad]
         )
 
         let generatedOperations = try target.generateBazelFileCreateOperations(rootPath: sampleRootPath)
@@ -52,7 +53,7 @@ final class AbstractTargetPlusBazelGenTests: XCTestCase {
                         deps: [":SampleTarget_lib"],
                         bundleID: "com.example.SampleTarget",
                         minimumOSVersion: "13.0",
-                        deviceFamilies: [BazelRule.DeviceFamily.iphone],
+                        deviceFamilies: [.iphone, .ipad],
                         infoPlists: ["//Path/To:SampleTarget_InfoPlist"]
                     ),
                 ]
@@ -69,7 +70,7 @@ final class AbstractTargetPlusBazelGenTests: XCTestCase {
             ),
         ]
 
-        XCTAssertEqual(expectedOperations.first!, generatedOperations.first!)
+        assertCreateBuildFileOperationEqual(expectedOperations.first!, generatedOperations.first!)
         XCTAssertEqual(expectedOperations[1], generatedOperations[1])
 
         XCTAssertEqual(expectedOperations.count, generatedOperations.count)
@@ -84,9 +85,9 @@ final class AbstractTargetPlusBazelGenTests: XCTestCase {
             AbstractSourceFile(path: Path(sourceFile1)),
             AbstractSourceFile(path: Path(sourceFile2)),
         ]
-        let dependency1 = AbstractTarget(name: "Dependency1", productType: .framework, bundleIdentifier: "com.example.Dependency1", path: Path("Dependency1"), sourceFiles: [], dependencies: [], infoPlistPath: sampleRootPath + Path("Path/To/Info.plist"), deploymentTarget: DeploymentTarget(iOS: "13.0"))
-        let dependency2 = AbstractTarget(name: "Dependency2", productType: .framework, bundleIdentifier: "com.example.Dependency2", path: Path("Dependency2"), sourceFiles: [], dependencies: [], infoPlistPath: sampleRootPath + Path("Path/To/Info.plist"), deploymentTarget: DeploymentTarget(iOS: "13.0"))
-        let target = AbstractTarget(name: "SampleTarget", productType: .framework, bundleIdentifier: "com.example.SampleTarget", path: Path(targetName), sourceFiles: sourceFiles, dependencies: [dependency1, dependency2], infoPlistPath: sampleRootPath + Path("Path/To/Info.plist"), deploymentTarget: DeploymentTarget(iOS: "13.0"))
+        let dependency1 = AbstractTarget(name: "Dependency1", productType: .framework, bundleIdentifier: "com.example.Dependency1", path: Path("Dependency1"), sourceFiles: [], dependencies: [], infoPlistPath: sampleRootPath + Path("Path/To/Info.plist"), deploymentTarget: DeploymentTarget(iOS: "13.0"), targetDevice: [.iphone])
+        let dependency2 = AbstractTarget(name: "Dependency2", productType: .framework, bundleIdentifier: "com.example.Dependency2", path: Path("Dependency2"), sourceFiles: [], dependencies: [], infoPlistPath: sampleRootPath + Path("Path/To/Info.plist"), deploymentTarget: DeploymentTarget(iOS: "13.0"), targetDevice: [.iphone])
+        let target = AbstractTarget(name: "SampleTarget", productType: .framework, bundleIdentifier: "com.example.SampleTarget", path: Path(targetName), sourceFiles: sourceFiles, dependencies: [dependency1, dependency2], infoPlistPath: sampleRootPath + Path("Path/To/Info.plist"), deploymentTarget: DeploymentTarget(iOS: "13.0"), targetDevice: [.iphone])
 
         let generatedOperations = try target.generateBazelFileCreateOperations(rootPath: sampleRootPath)
 

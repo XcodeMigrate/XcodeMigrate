@@ -22,6 +22,7 @@ extension AbstractTarget {
         static let infoPlistBuildSettingsKey = "INFOPLIST_FILE"
         static let iphoneOSDeploymentTargetKey = "IPHONEOS_DEPLOYMENT_TARGET"
         static let productBundleIdentifierKey = "PRODUCT_BUNDLE_IDENTIFIER"
+        static let targetedDeviceFamilyKey = "TARGETED_DEVICE_FAMILY"
     }
 
     init?(from target: PBXNativeTarget, projectRoot: Path) throws {
@@ -84,6 +85,18 @@ extension AbstractTarget {
 
         let deploymentTarget = DeploymentTarget(iOS: iPhoneDeploymentTarget)
 
+        let targetDevice: TargetDevice
+        if let targetedDeviceFamilyString = target.buildConfigurationList?.buildConfigurations.first?.buildSettings[Constants.targetedDeviceFamilyKey] as? String {
+            let targetedDeviceInteger = targetedDeviceFamilyString.split(separator: ",").compactMap { UInt($0) }.reduce(0) { partialResult, newInteger in
+                partialResult + newInteger
+            }
+            let parsedTargetDevice = TargetDevice(rawValue: targetedDeviceInteger)
+            targetDevice = parsedTargetDevice
+        } else {
+            logger.warning("Cannot parse \(Constants.targetedDeviceFamilyKey), using .iphone")
+            targetDevice = [.iphone]
+        }
+
         self.init(
             name: name,
             productType: ProductType(from: productType),
@@ -92,7 +105,8 @@ extension AbstractTarget {
             sourceFiles: sourceFiles ?? [],
             dependencies: dependencyTargets,
             infoPlistPath: infoPlistPath,
-            deploymentTarget: deploymentTarget
+            deploymentTarget: deploymentTarget,
+            targetDevice: targetDevice
         )
     }
 }

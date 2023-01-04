@@ -1,5 +1,5 @@
 //
-// AbstractTarget.swift
+// TargetDevice.swift
 // Copyright (c) 2023 Daohan Chong and other XcodeMigrate authors.
 // MIT License.
 //
@@ -10,27 +10,15 @@
 //
 
 import Foundation
-import PathKit
-public struct AbstractTarget {
-    public let name: String
-    public let productType: ProductType
-    public let bundleIdentifier: String
-    public let path: Path
-    public let sourceFiles: [AbstractSourceFile]
-    public let dependencies: [AbstractTarget]
-    public let infoPlistPath: Path
-    public let deploymentTarget: DeploymentTarget
-    public let targetDevice: TargetDevice
 
-    public init(name: String, productType: ProductType, bundleIdentifier: String, path: Path, sourceFiles: [AbstractSourceFile], dependencies: [AbstractTarget], infoPlistPath: Path, deploymentTarget: DeploymentTarget, targetDevice: TargetDevice) {
-        self.name = name
-        self.productType = productType
-        self.bundleIdentifier = bundleIdentifier
-        self.path = path
-        self.sourceFiles = sourceFiles
-        self.dependencies = dependencies
-        self.infoPlistPath = infoPlistPath
-        self.deploymentTarget = deploymentTarget
-        self.targetDevice = targetDevice
+public struct TargetDevice: OptionSet, Codable, Hashable {
+    public static let iphone = TargetDevice(rawValue: 1 << 0)
+    public static let ipad = TargetDevice(rawValue: 1 << 1)
+    public static let mac = TargetDevice(rawValue: 1 << 2)
+
+    public let rawValue: UInt
+
+    public init(rawValue: UInt) {
+        self.rawValue = rawValue
     }
 }

@@ -77,7 +77,7 @@ private extension AbstractTarget {
         return [
             CreateBuildFileOperation(targetPath: buildFilePath(rootPath: rootPath), rules: [
                 .swiftLibrary(name: swiftLibraryName, srcs: sourcePaths, deps: dependencyLabels, moduleName: name),
-                .iosFramework(name: name, deps: [":\(swiftLibraryName)"], bundleID: bundleIdentifier, minimumOSVersion: deploymentTarget.iOS ?? "13.0", deviceFamilies: [.iphone], infoPlists: [infoPlistLabelFromCurrentTarget]),
+                .iosFramework(name: name, deps: [":\(swiftLibraryName)"], bundleID: bundleIdentifier, minimumOSVersion: deploymentTarget.iOS ?? "13.0", deviceFamilies: deviceFamilies, infoPlists: [infoPlistLabelFromCurrentTarget]),
             ]),
             CreateBuildFileOperation(targetPath: infoPlistBuildFilePath, rules: [
                 .filegroup(name: infoPlistLabel, srcs: [
@@ -123,7 +123,7 @@ private extension AbstractTarget {
                     bundleID: bundleIdentifier,
                     infoplists: [infoPlistLabelFromCurrentTarget],
                     minimumOSVersion: deploymentTarget.iOS ?? "13.0",
-                    deviceFamilies: [.iphone] // TODO: Parse device family (<https://github.com/XcodeMigrate/XcodeMigrate/issues/8>)
+                    deviceFamilies: deviceFamilies
                 ),
                 mainTargetSource,
             ]),
@@ -146,5 +146,16 @@ private extension AbstractTarget {
             let dependencyLabelWithOutCommonPath = dependency.path.string[commonPathPrefix.endIndex...]
             return "/\(dependencyLabelWithOutCommonPath):\(dependency.name)"
         }
+    }
+
+    var deviceFamilies: [BazelRule.DeviceFamily] {
+        var families: [BazelRule.DeviceFamily] = []
+        if targetDevice.contains(.iphone) {
+            families.append(.iphone)
+        }
+        if targetDevice.contains(.ipad) {
+            families.append(.ipad)
+        }
+        return families
     }
 }
