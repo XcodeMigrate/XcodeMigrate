@@ -40,7 +40,7 @@ public extension String {
     }
 }
 
-public extension Array where Element == String {
+public extension [String] {
     func toArrayLiteralString() -> String {
         guard !isEmpty else {
             return "[]"

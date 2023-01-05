@@ -35,7 +35,7 @@ extension BazelRule {
 
 extension BazelRule {
     var generatedRuleString: String {
-        return renderedRule.stringRepresentation
+        renderedRule.stringRepresentation
     }
 
     var ruleLoadingString: String {

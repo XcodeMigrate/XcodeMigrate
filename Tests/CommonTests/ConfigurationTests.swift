@@ -1,5 +1,5 @@
 //
-// PBXFileElement+FilePath.swift
+// ConfigurationTests.swift
 // Copyright (c) 2023 Daohan Chong and other XcodeMigrate authors.
 // MIT License.
 //
@@ -9,19 +9,18 @@
 // THE SOFTWARE IS PROVIDED  AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import XcodeProj
+@testable import Common
+import XCTest
+import Yams
 
-extension PBXFileElement {
-    func filePathFromRoot() -> String? {
-        guard let path else {
-            return nil
-        }
-        guard let parent else {
-            return path
-        }
-        guard let parentPath = parent.filePathFromRoot() else {
-            return path
-        }
-        return parentPath + "/" + path
+class ConfigurationTests: XCTestCase {
+    func testParsingConfiguration() throws {
+        let yamlString = """
+        parser:
+          buildConfig: Release
+        """
+
+        let configuration = try YAMLDecoder().decode(Configuration.self, from: yamlString)
+        XCTAssertEqual(configuration.parser!.buildConfig!, "Release")
     }
 }

@@ -138,7 +138,7 @@ private extension AbstractTarget {
 
 private extension AbstractTarget {
     var dependencyLabels: [String] {
-        return dependencies.map { dependency in
+        dependencies.map { dependency in
             let commonPathPrefix = String.commonPrefix(strings: [
                 self.path.string,
                 dependency.path.string,

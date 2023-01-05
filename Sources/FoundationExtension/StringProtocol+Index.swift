@@ -12,13 +12,13 @@
 import Foundation
 
 public extension StringProtocol {
-    func index<S: StringProtocol>(of string: S, options: String.CompareOptions = []) -> Index? {
+    func index(of string: some StringProtocol, options: String.CompareOptions = []) -> Index? {
         range(of: string, options: options)?.lowerBound
     }
 
-    func ranges<S: StringProtocol>(of string: S, options: String.CompareOptions = []) -> [Range<Index>] {
+    func ranges(of string: some StringProtocol, options: String.CompareOptions = []) -> [Range<Index>] {
         var result: [Range<Index>] = []
-        var startIndex = self.startIndex
+        var startIndex = startIndex
         while startIndex < endIndex,
               let range = self[startIndex...]
               .range(of: string, options: options)
