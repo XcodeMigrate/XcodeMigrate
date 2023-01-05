@@ -26,7 +26,6 @@ extension BazelRule {
             return Rule(name: "ios_application")
                 .attr(key: "name", value: name)
                 .attr(key: "deps", value: deps)
-                // TODO: Fix bundle id parsing (<https://github.com/XcodeMigrate/XcodeMigrate/issues/4>)
                 .attr(key: "bundle_id", value: bundleID)
                 .attr(key: "infoplists", value: infoplists)
                 .attr(key: "minimum_os_version", value: minimumOSVersion)
