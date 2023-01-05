@@ -28,7 +28,7 @@ However, migrating existing (large) Xcode project to Bazel is not easy. It requi
 ## Usage
 
 ```swift
-mint install XcodeMigrate/XcodeMigrate
+mint install XcodeMigrate/XcodeMigrate@main
 mint run xcode-migrate generate -p /path/to/your.xcodeproj
 ```
 
