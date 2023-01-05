@@ -43,6 +43,7 @@ You can build the project with Bazel by running:
 ```bash
 git clone https://github.com/XcodeMigrate/XcodeMigrate.git
 cd XcodeMigrate/fixtures/basic
+tuist generate # Generating Info.plist files
 bazel build //:BasicFixtureProject --sandbox_debug --verbose_failures
 ```
 

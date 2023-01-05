@@ -1,0 +1,17 @@
+filegroup(
+    name = "BasicFixtureProjectKit_InfoPlist",
+    srcs = ["BasicFixtureProjectKit-Info.plist"],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "BasicFixtureProjectUI_InfoPlist",
+    srcs = ["BasicFixtureProjectUI-Info.plist"],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "BasicFixtureProject_InfoPlist",
+    srcs = ["BasicFixtureProject-Info.plist"],
+    visibility = ["//visibility:public"],
+)
