@@ -60,6 +60,9 @@ public extension BazelGenerator {
         }
 
         fileManager.createFile(atPath: workspaceFilePath.string, contents: workspaceString.data(using: .utf8), attributes: nil)
+        if let formatterPath {
+            invokeFormatter(buildifierPath: formatterPath, filePath: workspaceFilePath.string)
+        }
 
         try generateBuildFiles(fileManager: fileManager, operationMapping: buildFileOperations, formatterPath: formatterPath)
     }
