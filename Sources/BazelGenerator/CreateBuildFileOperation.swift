@@ -45,10 +45,10 @@ extension CreateBuildFileOperation {
             }
         }
 
-        return Array(ruleLoadingStrings)
+        return Array(ruleLoadingStrings).sorted()
     }
 
     var allRules: String {
-        rules.map(\.generatedRuleString).joined(separator: "\n")
+        rules.map(\.generatedRuleString).sorted().joined(separator: "\n")
     }
 }

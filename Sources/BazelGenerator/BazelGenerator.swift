@@ -72,7 +72,7 @@ private extension BazelGenerator {
     static func generateBuildFiles(fileManager: FileManager, operationMapping: [Path: [CreateBuildFileOperation]], formatterPath: Path?) throws {
         for (path, operations) in operationMapping {
             let mergedRuleLoadingStatements = CreateBuildFileOperation.aggregatedLoadingStatements(of: operations).joined(separator: "\n")
-            let allRules = operations.map(\.allRules).joined(separator: "\n")
+            let allRules = operations.map(\.allRules).sorted().joined(separator: "\n")
 
             if fileManager.fileExists(atPath: path.string) {
                 try fileManager.removeItem(atPath: path.string)
