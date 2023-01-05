@@ -20,22 +20,28 @@ public class XcodeParser {
     let project: XcodeProj
 
     let projectRoot: Path
+    let configuration: ParserConfiguration
 
     public private(set) var abstractProject: AbstractProject?
 
-    public init(projectPath: String) throws {
+    public init(
+        projectPath: String,
+        configuration: ParserConfiguration = .empty
+    ) throws {
         let inputPath = Path(projectPath)
         let path = inputPath.isAbsolute ? inputPath : Path.current + inputPath
 
         projectRoot = path.parent()
         project = try XcodeProj(path: path)
+
+        self.configuration = configuration
     }
 
     public func perform() throws {
 //        let targetMap: [String: AbstractTarget] = [:] // TODO: Memorize targets generated so far
 
         let targets: [AbstractTarget] = try project.pbxproj.nativeTargets.compactMap { target -> AbstractTarget? in
-            try AbstractTarget(from: target, projectRoot: projectRoot)
+            try AbstractTarget(from: target, projectRoot: projectRoot, configuration: configuration)
         }
 
         abstractProject = AbstractProject(targets: targets, rootPath: projectRoot)

@@ -10,6 +10,9 @@
 //
 
 public struct ParserConfiguration: Codable {
-  /// The name of the build configuration to parse in Xcode. Default: `Debug` (when `nil`)
-  public let buildConfig: String?
+    public static let empty: ParserConfiguration = .init(
+        buildConfig: nil
+    )
+    /// The name of the build configuration to parse in Xcode. Default: `Debug` (when `nil`)
+    public let buildConfig: String?
 }

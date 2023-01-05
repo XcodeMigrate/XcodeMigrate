@@ -9,6 +9,7 @@
 // THE SOFTWARE IS PROVIDED  AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+import Common
 import PathKit
 import XcodeAbstraction
 import XcodeProj
@@ -25,7 +26,11 @@ extension AbstractTarget {
         static let targetedDeviceFamilyKey = "TARGETED_DEVICE_FAMILY"
     }
 
-    init?(from target: PBXNativeTarget, projectRoot: Path) throws {
+    init?(
+        from target: PBXNativeTarget,
+        projectRoot: Path,
+        configuration: ParserConfiguration
+    ) throws {
         let name = target.name
         guard let productType = target.productType else {
             return nil
@@ -53,11 +58,19 @@ extension AbstractTarget {
         }
 
         let nativeTargetDependencies = target.dependencies.compactMap { $0.target as? PBXNativeTarget }
-        let dependencyTargets = try nativeTargetDependencies.compactMap { try AbstractTarget(from: $0, projectRoot: projectRoot) }
+        let dependencyTargets = try nativeTargetDependencies.compactMap { try AbstractTarget(from: $0, projectRoot: projectRoot, configuration: configuration) }
+
+        let targetBuildSetting = configuration.buildConfig ?? "Debug"
+        let selectedBuildConfiguration: XCBuildConfiguration?
+        if let matchedConfiguration = target.buildConfigurationList?.buildConfigurations.first(where: { $0.name == targetBuildSetting }) {
+            selectedBuildConfiguration = matchedConfiguration
+        } else {
+            logger.warning("No configuration found for name \(targetBuildSetting), using first configuration")
+            selectedBuildConfiguration = target.buildConfigurationList?.buildConfigurations.first
+        }
 
         guard let infoPlist =
-            // TODO: Add configuration for parsing Debug/Release builds (https://github.com/XcodeMigrate/XcodeMigrate/issues/19)
-            target.buildConfigurationList?.buildConfigurations.first?.buildSettings[Constants.infoPlistBuildSettingsKey] as? String
+            selectedBuildConfiguration?.buildSettings[Constants.infoPlistBuildSettingsKey] as? String
         else {
             throw AbstractTargetCreationError.noInfoPlist
         }
@@ -67,8 +80,7 @@ extension AbstractTarget {
         ])
 
         let iPhoneDeploymentTarget: String?
-        // TODO: Add configuration for parsing Debug/Release builds (https://github.com/XcodeMigrate/XcodeMigrate/issues/19)
-        if let iPhoneDeploymentTargetString = target.buildConfigurationList?.buildConfigurations.first?.buildSettings[Constants.iphoneOSDeploymentTargetKey] as? String {
+        if let iPhoneDeploymentTargetString = selectedBuildConfiguration?.buildSettings[Constants.iphoneOSDeploymentTargetKey] as? String {
             iPhoneDeploymentTarget = iPhoneDeploymentTargetString
         } else {
             iPhoneDeploymentTarget = nil
@@ -76,7 +88,7 @@ extension AbstractTarget {
         }
 
         let bundleID: String
-        if let bundleIDFromBuildConfiguration = target.buildConfigurationList?.buildConfigurations.first?.buildSettings[Constants.productBundleIdentifierKey] as? String {
+        if let bundleIDFromBuildConfiguration = selectedBuildConfiguration?.buildSettings[Constants.productBundleIdentifierKey] as? String {
             bundleID = bundleIDFromBuildConfiguration
         } else {
             bundleID = "not.found.bundle.id.\(target.name)"
@@ -86,7 +98,7 @@ extension AbstractTarget {
         let deploymentTarget = DeploymentTarget(iOS: iPhoneDeploymentTarget)
 
         let targetDevice: TargetDevice
-        if let targetedDeviceFamilyString = target.buildConfigurationList?.buildConfigurations.first?.buildSettings[Constants.targetedDeviceFamilyKey] as? String {
+        if let targetedDeviceFamilyString = selectedBuildConfiguration?.buildSettings[Constants.targetedDeviceFamilyKey] as? String {
             let targetedDeviceInteger = targetedDeviceFamilyString.split(separator: ",").compactMap { UInt($0) }.reduce(0) { partialResult, newInteger in
                 partialResult + newInteger
             }
