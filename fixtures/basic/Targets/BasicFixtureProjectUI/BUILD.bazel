@@ -1,14 +1,6 @@
 load("@build_bazel_rules_apple//apple:ios.bzl", "ios_framework")
 load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
 
-swift_library(
-    name = "BasicFixtureProjectUI_lib",
-    srcs = ["Sources/BasicFixtureProjectUI.swift"],
-    module_name = "BasicFixtureProjectUI",
-    visibility = ["//visibility:public"],
-    deps = [],
-)
-
 ios_framework(
     name = "BasicFixtureProjectUI",
     bundle_id = "io.tuist.BasicFixtureProjectUI",
@@ -20,4 +12,12 @@ ios_framework(
     minimum_os_version = "13.0",
     visibility = ["//visibility:public"],
     deps = [":BasicFixtureProjectUI_lib"],
+)
+
+swift_library(
+    name = "BasicFixtureProjectUI_lib",
+    srcs = ["Sources/BasicFixtureProjectUI.swift"],
+    module_name = "BasicFixtureProjectUI",
+    visibility = ["//visibility:public"],
+    deps = [],
 )
