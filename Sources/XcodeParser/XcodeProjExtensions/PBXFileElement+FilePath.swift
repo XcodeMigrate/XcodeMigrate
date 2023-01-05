@@ -13,10 +13,10 @@ import XcodeProj
 
 extension PBXFileElement {
     func filePathFromRoot() -> String? {
-        guard let path = path else {
+        guard let path else {
             return nil
         }
-        guard let parent = parent else {
+        guard let parent else {
             return path
         }
         guard let parentPath = parent.filePathFromRoot() else {

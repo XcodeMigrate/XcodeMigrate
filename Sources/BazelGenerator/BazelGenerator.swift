@@ -79,7 +79,7 @@ private extension BazelGenerator {
 
             fileManager.createFile(atPath: path.string, contents: fullContent.data(using: .utf8))
 
-            if let formatterPath = formatterPath {
+            if let formatterPath {
                 invokeFormatter(buildifierPath: formatterPath, filePath: path.string)
             }
         }
