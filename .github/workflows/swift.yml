@@ -64,12 +64,11 @@ jobs:
         run: cd fixtures && make generate
       - name: Build (debug)
         run: swift build -c debug
-      - name: Run E2E tests
+      - name: Bazel generation
         run: |
           brew install bazelisk
           cd fixtures/basic
           ../../.build/debug/xcode-migrate bazel -p ./BasicFixtureProject.xcodeproj
-          bazel build //:BasicFixtureProject --sandbox_debug --verbose_failures
       - name: Git diff
         run: |
           git diff --exit-code
@@ -79,3 +78,7 @@ jobs:
             echo "Changes after bazel testing. Please run xcode-migrate locally and commit changes."
             exit 1
           fi
+      - name: Build using Bazel
+        run: |
+          cd fixtures/basic
+          bazel build //:BasicFixtureProject --sandbox_debug --verbose_failures
