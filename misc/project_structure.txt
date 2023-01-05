@@ -4,7 +4,8 @@ XcodeMigrate
   XcodeParser - Parsing layer
     XcodeProj
   XcodeAbstraction - Modeling layer (without any dependency to XcodeProj)
-  BazelGenerator
-  Common - Shared logic such as logging
+  BazelGenerator - Bazel generation layer
+  BazelRenderingKit - Bazel content rendering layer
+  Common - Shared logic such as logging and configuration structs
   FoundationExtension - Extensions to Foundation
   TestSupport - Test helpers

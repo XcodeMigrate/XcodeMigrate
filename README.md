@@ -22,18 +22,29 @@ However, migrating existing (large) Xcode project to Bazel is not easy. It requi
 ## Goals
 
 - Ready to use out of the box, minimal configuration for most projects
-- Full support [rules_xcodeproj](https://github.com/buildbuddy-io/rules_xcodeproj)
+- Fully support [rules_xcodeproj](https://github.com/buildbuddy-io/rules_xcodeproj)
 - Mixed language target (Objective-C/Swift) generation using [rules_ios](https://github.com/bazel-ios/rules_ios)
 
 ## Usage
 
-```swift
+```bash
 mint install XcodeMigrate/XcodeMigrate@main
 mint run xcode-migrate generate -p /path/to/your.xcodeproj
 ```
 
+## Demo Project
+
 At current stage, `xcode-migrate` only supports generating Bazel files for iOS projects with Swift only frameworks.
 You can try the testing project under [fixtures](https://github.com/XcodeMigrate/XcodeMigrate/tree/main/fixtures) directory. There is an example in [.github/workflows/swift.yml](https://github.com/XcodeMigrate/XcodeMigrate/blob/main/.github/workflows/swift.yml).
+
+We are tracking generated Bazel files in this repository.
+You can build the project with Bazel by running:
+
+```bash
+git clone https://github.com/XcodeMigrate/XcodeMigrate.git
+cd XcodeMigrate/fixtures/basic
+bazel build //:BasicFixtureProject --sandbox_debug --verbose_failures
+```
 
 ## Design
 
@@ -42,13 +53,14 @@ You can try the testing project under [fixtures](https://github.com/XcodeMigrate
 
 ```
 XcodeMigrate
- |--XcodeParser - Parsing layer
- |   `--XcodeProj
- |--XcodeAbstraction - Modeling layer (without any dependency to XcodeProj)
- |--BazelGenerator
- |--Common - Shared logic such as logging
- |--FoundationExtension - Extensions to Foundation
- `--TestSupport - Test helpers
+ ├─XcodeParser - Parsing layer
+ │  └─XcodeProj
+ ├─XcodeAbstraction - Modeling layer (without any dependency to XcodeProj)
+ ├─BazelGenerator - Bazel generation layer
+ ├─BazelRenderingKit - Bazel content rendering layer
+ ├─Common - Shared logic such as logging and configuration structs
+ ├─FoundationExtension - Extensions to Foundation
+ └─TestSupport - Test helpers
  ```
 
  (Created by [Diagon](https://github.com/ArthurSonzogni/Diagon))
