@@ -33,7 +33,7 @@ extension CreateBuildFileOperation {
             ruleLoadingStrings.insert(bazelRule.ruleLoadingString)
         }
 
-        return Array(ruleLoadingStrings)
+        return Array(ruleLoadingStrings).sorted()
     }
 
     static func aggregatedLoadingStatements(of operations: [CreateBuildFileOperation]) -> [String] {
