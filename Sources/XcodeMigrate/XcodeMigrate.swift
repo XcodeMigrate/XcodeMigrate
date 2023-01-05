@@ -13,7 +13,9 @@ import ArgumentParser
 import BazelGenerator
 import Common
 import Foundation
+import PathKit
 import XcodeParser
+import Yams
 
 let logger = Logger(label: "XcodeMigrate")
 
@@ -29,9 +31,22 @@ struct XcodeMigrate: ParsableCommand {
     @Option(name: .shortAndLong, help: "Path to Xcode project")
     var project: String
 
+    @Option(name: .shortAndLong, help: "Path to configuration file")
+    var config: String?
+
     mutating func run() throws {
+        let configuration: Configuration?
+        let yamlDecoder = YAMLDecoder()
+        if let configPath = config {
+            let configData = try Data(contentsOf: Path(configPath).url)
+            configuration = try yamlDecoder.decode(Configuration.self, from: configData)
+        } else {
+            configuration = nil
+            logger.info("No configuration file found, using default configuration")
+        }
+
         logger.info("Project path: \(project)")
-        let parser = try XcodeParser(projectPath: project)
+        let parser = try XcodeParser(projectPath: project, configuration: configuration?.parser ?? .empty)
 
         try parser.perform()
 
