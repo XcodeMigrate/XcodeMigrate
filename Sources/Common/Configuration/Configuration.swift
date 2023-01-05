@@ -10,5 +10,5 @@
 //
 
 public struct Configuration: Codable {
-  public let parser: ParserConfiguration?
+    public let parser: ParserConfiguration?
 }

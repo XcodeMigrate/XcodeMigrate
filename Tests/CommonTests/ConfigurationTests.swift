@@ -14,13 +14,13 @@ import XCTest
 import Yams
 
 class ConfigurationTests: XCTestCase {
-  func testParsingConfiguration() {
-    let yamlString = """
-    parser:
-      buildConfig: Release
-    """
+    func testParsingConfiguration() {
+        let yamlString = """
+        parser:
+          buildConfig: Release
+        """
 
-    let configuration = try! YAMLDecoder().decode(Configuration.self, from: yamlString)
-    XCTAssertEqual(configuration.parser!.buildConfig!, "Release")
-  }
+        let configuration = try! YAMLDecoder().decode(Configuration.self, from: yamlString)
+        XCTAssertEqual(configuration.parser!.buildConfig!, "Release")
+    }
 }
