@@ -46,7 +46,9 @@ public extension BazelGenerator {
             }
         }
 
-        let workspaceRuleSetStrings = globalRuleSet.map(\.workspaceContent)
+        let workspaceRuleSetStrings = Array(globalRuleSet).sorted(by: { a, b in
+            a.rawValue < b.rawValue
+        }).map(\.workspaceContent)
 
         let httpArchive = """
         load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
