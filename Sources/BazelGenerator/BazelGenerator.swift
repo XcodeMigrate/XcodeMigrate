@@ -46,7 +46,9 @@ public extension BazelGenerator {
             }
         }
 
-        let workspaceRuleSetStrings = globalRuleSet.map(\.workspaceContent)
+        let workspaceRuleSetStrings = Array(globalRuleSet).sorted(by: { a, b in
+            a.rawValue < b.rawValue
+        }).map(\.workspaceContent)
 
         let httpArchive = """
         load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
@@ -60,6 +62,9 @@ public extension BazelGenerator {
         }
 
         fileManager.createFile(atPath: workspaceFilePath.string, contents: workspaceString.data(using: .utf8), attributes: nil)
+        if let formatterPath {
+            invokeFormatter(buildifierPath: formatterPath, filePath: workspaceFilePath.string)
+        }
 
         try generateBuildFiles(fileManager: fileManager, operationMapping: buildFileOperations, formatterPath: formatterPath)
     }
@@ -69,7 +74,7 @@ private extension BazelGenerator {
     static func generateBuildFiles(fileManager: FileManager, operationMapping: [Path: [CreateBuildFileOperation]], formatterPath: Path?) throws {
         for (path, operations) in operationMapping {
             let mergedRuleLoadingStatements = CreateBuildFileOperation.aggregatedLoadingStatements(of: operations).joined(separator: "\n")
-            let allRules = operations.map(\.allRules).joined(separator: "\n")
+            let allRules = operations.map(\.allRules).sorted().joined(separator: "\n")
 
             if fileManager.fileExists(atPath: path.string) {
                 try fileManager.removeItem(atPath: path.string)

@@ -1,0 +1,32 @@
+load("@build_bazel_rules_apple//apple:ios.bzl", "ios_application")
+load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
+
+ios_application(
+    name = "BasicFixtureProject",
+    bundle_id = "io.tuist.BasicFixtureProject",
+    families = [
+        "iphone",
+        "ipad",
+    ],
+    infoplists = ["//Derived/InfoPlists:BasicFixtureProject_InfoPlist"],
+    minimum_os_version = "13.0",
+    deps = [
+        ":BasicFixtureProject_source",
+        "//Targets/BasicFixtureProjectKit",
+        "//Targets/BasicFixtureProjectUI",
+    ],
+)
+
+swift_library(
+    name = "BasicFixtureProject_source",
+    srcs = [
+        "Derived/Sources/TuistBundle+BasicFixtureProject.swift",
+        "Targets/BasicFixtureProject/Sources/AppDelegate.swift",
+    ],
+    module_name = "BasicFixtureProject",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//Targets/BasicFixtureProjectKit:BasicFixtureProjectKit_lib",
+        "//Targets/BasicFixtureProjectUI:BasicFixtureProjectUI_lib",
+    ],
+)
