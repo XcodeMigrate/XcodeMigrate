@@ -17,17 +17,19 @@ public struct AbstractTarget {
     public let bundleIdentifier: String
     public let path: Path
     public let sourceFiles: [AbstractSourceFile]
+    public let resources: [AbstractSourceFile]
     public let dependencies: [AbstractTarget]
     public let infoPlistPath: Path
     public let deploymentTarget: DeploymentTarget
     public let targetDevice: TargetDevice
 
-    public init(name: String, productType: ProductType, bundleIdentifier: String, path: Path, sourceFiles: [AbstractSourceFile], dependencies: [AbstractTarget], infoPlistPath: Path, deploymentTarget: DeploymentTarget, targetDevice: TargetDevice) {
+    public init(name: String, productType: ProductType, bundleIdentifier: String, path: Path, sourceFiles: [AbstractSourceFile], resources: [AbstractSourceFile], dependencies: [AbstractTarget], infoPlistPath: Path, deploymentTarget: DeploymentTarget, targetDevice: TargetDevice) {
         self.name = name
         self.productType = productType
         self.bundleIdentifier = bundleIdentifier
         self.path = path
         self.sourceFiles = sourceFiles
+        self.resources = resources
         self.dependencies = dependencies
         self.infoPlistPath = infoPlistPath
         self.deploymentTarget = deploymentTarget

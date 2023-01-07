@@ -77,7 +77,13 @@ private extension AbstractTarget {
         return [
             CreateBuildFileOperation(targetPath: buildFilePath(rootPath: rootPath), rules: [
                 .swiftLibrary(name: swiftLibraryName, srcs: sourcePaths, deps: dependencyLabels, moduleName: name),
-                .iosFramework(name: name, deps: [":\(swiftLibraryName)"], bundleID: bundleIdentifier, minimumOSVersion: deploymentTarget.iOS ?? "13.0", deviceFamilies: deviceFamilies, infoPlists: [infoPlistLabelFromCurrentTarget]),
+                .iosFramework(name: name,
+                              deps: [":\(swiftLibraryName)"], // TODO: Normalize Path: <https://github.com/XcodeMigrate/XcodeMigrate/issues/6>
+                              bundleID: bundleIdentifier,
+                              minimumOSVersion: deploymentTarget.iOS ?? "13.0",
+                              deviceFamilies: deviceFamilies,
+                              infoPlists: [infoPlistLabelFromCurrentTarget],
+                              resources: resourceLabels), // TODO: Normalize Path: <https://github.com/XcodeMigrate/XcodeMigrate/issues/6>
             ]),
             CreateBuildFileOperation(targetPath: infoPlistBuildFilePath, rules: [
                 .filegroup(name: infoPlistLabel, srcs: [
@@ -119,11 +125,12 @@ private extension AbstractTarget {
                     name: name,
                     deps: [
                         ":\(sourceName)",
-                    ] + dependencyLabels,
+                    ] + dependencyLabels, // TODO: Normalize Path: <https://github.com/XcodeMigrate/XcodeMigrate/issues/6>
                     bundleID: bundleIdentifier,
                     infoplists: [infoPlistLabelFromCurrentTarget],
                     minimumOSVersion: deploymentTarget.iOS ?? "13.0",
-                    deviceFamilies: deviceFamilies
+                    deviceFamilies: deviceFamilies,
+                    resources: resourceLabels // TODO: Normalize Path: <https://github.com/XcodeMigrate/XcodeMigrate/issues/6>
                 ),
                 mainTargetSource,
             ]),
@@ -157,5 +164,9 @@ private extension AbstractTarget {
             families.append(.ipad)
         }
         return families
+    }
+    
+    var resourceLabels: [String] {
+        resources.map(\.path).map(\.string)
     }
 }

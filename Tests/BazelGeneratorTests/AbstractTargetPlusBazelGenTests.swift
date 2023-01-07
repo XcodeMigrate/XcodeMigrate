@@ -30,6 +30,7 @@ final class AbstractTargetPlusBazelGenTests: XCTestCase {
             bundleIdentifier: "com.example.SampleTarget",
             path: Path(targetName),
             sourceFiles: sourceFiles,
+            resources: [],
             dependencies: [],
             infoPlistPath: sampleRootPath + Path("Path/To/Info.plist"),
             deploymentTarget: DeploymentTarget(iOS: "13.0"),
@@ -54,7 +55,8 @@ final class AbstractTargetPlusBazelGenTests: XCTestCase {
                         bundleID: "com.example.SampleTarget",
                         minimumOSVersion: "13.0",
                         deviceFamilies: [.iphone, .ipad],
-                        infoPlists: ["//Path/To:SampleTarget_InfoPlist"]
+                        infoPlists: ["//Path/To:SampleTarget_InfoPlist"],
+                        resources: []
                     ),
                 ]
             ),
@@ -85,9 +87,9 @@ final class AbstractTargetPlusBazelGenTests: XCTestCase {
             AbstractSourceFile(path: Path(sourceFile1)),
             AbstractSourceFile(path: Path(sourceFile2)),
         ]
-        let dependency1 = AbstractTarget(name: "Dependency1", productType: .framework, bundleIdentifier: "com.example.Dependency1", path: Path("Dependency1"), sourceFiles: [], dependencies: [], infoPlistPath: sampleRootPath + Path("Path/To/Info.plist"), deploymentTarget: DeploymentTarget(iOS: "13.0"), targetDevice: [.iphone])
-        let dependency2 = AbstractTarget(name: "Dependency2", productType: .framework, bundleIdentifier: "com.example.Dependency2", path: Path("Dependency2"), sourceFiles: [], dependencies: [], infoPlistPath: sampleRootPath + Path("Path/To/Info.plist"), deploymentTarget: DeploymentTarget(iOS: "13.0"), targetDevice: [.iphone])
-        let target = AbstractTarget(name: "SampleTarget", productType: .framework, bundleIdentifier: "com.example.SampleTarget", path: Path(targetName), sourceFiles: sourceFiles, dependencies: [dependency1, dependency2], infoPlistPath: sampleRootPath + Path("Path/To/Info.plist"), deploymentTarget: DeploymentTarget(iOS: "13.0"), targetDevice: [.iphone])
+        let dependency1 = AbstractTarget(name: "Dependency1", productType: .framework, bundleIdentifier: "com.example.Dependency1", path: Path("Dependency1"), sourceFiles: [], resources: [], dependencies: [], infoPlistPath: sampleRootPath + Path("Path/To/Info.plist"), deploymentTarget: DeploymentTarget(iOS: "13.0"), targetDevice: [.iphone])
+        let dependency2 = AbstractTarget(name: "Dependency2", productType: .framework, bundleIdentifier: "com.example.Dependency2", path: Path("Dependency2"), sourceFiles: [], resources: [], dependencies: [], infoPlistPath: sampleRootPath + Path("Path/To/Info.plist"), deploymentTarget: DeploymentTarget(iOS: "13.0"), targetDevice: [.iphone])
+        let target = AbstractTarget(name: "SampleTarget", productType: .framework, bundleIdentifier: "com.example.SampleTarget", path: Path(targetName), sourceFiles: sourceFiles, resources: [AbstractSourceFile(path: "index.html")], dependencies: [dependency1, dependency2], infoPlistPath: sampleRootPath + Path("Path/To/Info.plist"), deploymentTarget: DeploymentTarget(iOS: "13.0"), targetDevice: [.iphone])
 
         let generatedOperations = try target.generateBazelFileCreateOperations(rootPath: sampleRootPath)
 
@@ -96,7 +98,7 @@ final class AbstractTargetPlusBazelGenTests: XCTestCase {
                 targetPath: "/path/of/root/SampleTarget/BUILD.bazel",
                 rules: [
                     BazelRule.swiftLibrary(name: "SampleTarget_lib", srcs: ["path/of/root/SampleTarget/Foo.swift", "path/of/root/SampleTarget/Bar.swift"], deps: ["/Dependency1:Dependency1", "/Dependency2:Dependency2"], moduleName: "SampleTarget"),
-                    BazelRule.iosFramework(name: "SampleTarget", deps: [":SampleTarget_lib"], bundleID: "com.example.SampleTarget", minimumOSVersion: "13.0", deviceFamilies: [BazelRule.DeviceFamily.iphone], infoPlists: ["//Path/To:SampleTarget_InfoPlist"]),
+                    BazelRule.iosFramework(name: "SampleTarget", deps: [":SampleTarget_lib"], bundleID: "com.example.SampleTarget", minimumOSVersion: "13.0", deviceFamilies: [BazelRule.DeviceFamily.iphone], infoPlists: ["//Path/To:SampleTarget_InfoPlist"], resources: ["index.html"]),
                 ]
             ),
             CreateBuildFileOperation(

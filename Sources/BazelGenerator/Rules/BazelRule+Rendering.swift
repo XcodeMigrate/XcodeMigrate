@@ -22,7 +22,7 @@ extension BazelRule {
                 .attr(key: "deps", value: deps)
                 .attr(key: "module_name", value: moduleName)
                 .attr(key: "visibility", value: ["//visibility:public"])
-        case let .iosApplication(name, deps, bundleID, infoplists, minimumOSVersion, deviceFamilies):
+        case let .iosApplication(name, deps, bundleID, infoplists, minimumOSVersion, deviceFamilies, resources):
             return Rule(name: "ios_application")
                 .attr(key: "name", value: name)
                 .attr(key: "deps", value: deps)
@@ -30,7 +30,8 @@ extension BazelRule {
                 .attr(key: "infoplists", value: infoplists)
                 .attr(key: "minimum_os_version", value: minimumOSVersion)
                 .attr(key: "families", value: deviceFamilies.map(\.rawValue))
-        case let .iosFramework(name, deps, bundleID, minimumOSVersion, deviceFamilies, infoPlists):
+                .attr(key: "resources", value: resources)
+        case let .iosFramework(name, deps, bundleID, minimumOSVersion, deviceFamilies, infoPlists, resources):
             return Rule(name: "ios_framework")
                 .attr(key: "name", value: name)
                 .attr(key: "bundle_id", value: bundleID)
@@ -39,6 +40,7 @@ extension BazelRule {
                 .attr(key: "minimum_os_version", value: minimumOSVersion)
                 .attr(key: "visibility", value: ["//visibility:public"])
                 .attr(key: "deps", value: deps)
+                .attr(key: "resources", value: resources)
         case let .filegroup(name, srcs):
             return Rule(name: "filegroup")
                 .attr(key: "name", value: name)
