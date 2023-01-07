@@ -165,7 +165,7 @@ private extension AbstractTarget {
         }
         return families
     }
-    
+
     var resourceLabels: [String] {
         resources.map(\.path).map(\.string)
     }
