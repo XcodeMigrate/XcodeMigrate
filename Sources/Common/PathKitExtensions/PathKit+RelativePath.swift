@@ -12,21 +12,21 @@
 import PathKit
 
 extension Path {
-  func relative(to path: Path) -> Path {
-    let pathComponents = path.components
-    let selfComponents = components
+    func relative(to path: Path) -> Path {
+        let pathComponents = path.components
+        let selfComponents = components
 
-    var commonPrefixLength = 0
-    for (pathComponent, selfComponent) in zip(pathComponents, selfComponents) {
-      if pathComponent == selfComponent {
-        commonPrefixLength += 1
-      } else {
-        break
-      }
+        var commonPrefixLength = 0
+        for (pathComponent, selfComponent) in zip(pathComponents, selfComponents) {
+            if pathComponent == selfComponent {
+                commonPrefixLength += 1
+            } else {
+                break
+            }
+        }
+
+        let relativeComponents = Array(repeating: "..", count: pathComponents.count - commonPrefixLength) + selfComponents[commonPrefixLength...]
+
+        return Path(components: relativeComponents)
     }
-
-    let relativeComponents = Array(repeating: "..", count: pathComponents.count - commonPrefixLength) + selfComponents[commonPrefixLength...]
-
-    return Path(components: relativeComponents)
-  }
 }
