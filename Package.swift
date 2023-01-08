@@ -44,6 +44,7 @@ let package = Package(
 
         .target(name: "Common", dependencies: [
             .product(name: "Logging", package: "swift-log"),
+            "PathKit",
         ]),
         .target(name: "TestSupport", path: "Tests/TestSupport"),
         .testTarget(name: "CommonTests", dependencies: [
