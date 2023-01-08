@@ -9,6 +9,7 @@
 // THE SOFTWARE IS PROVIDED  AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+import Common
 import FoundationExtension
 import PathKit
 import XcodeAbstraction
@@ -29,24 +30,24 @@ enum BazelGeneratorAbstractTargetError: Error {
 }
 
 extension AbstractTarget {
-    func buildFilePath(rootPath: Path) -> Path {
+    func buildFilePath(projectRoot: Path) -> Path {
         let buildFilePath = path + "BUILD.bazel"
         guard !buildFilePath.isAbsolute else {
             return buildFilePath
         }
 
-        let normalizedBuildFilePath = rootPath + buildFilePath
+        let normalizedBuildFilePath = projectRoot + buildFilePath
         return normalizedBuildFilePath
     }
 }
 
 extension AbstractTarget {
-    func generateBazelFileCreateOperations(rootPath: Path) throws -> [CreateBuildFileOperation] {
+    func generateBazelFileCreateOperations(projectRoot: Path) throws -> [CreateBuildFileOperation] {
         switch productType {
         case .framework:
-            return generateFramework(rootPath: rootPath)
+            return generateFramework(projectRoot: projectRoot)
         case .application:
-            return generatePhoneOSApplication(rootPath: rootPath)
+            return generatePhoneOSApplication(projectRoot: projectRoot)
         case .unitTestBundle:
             fallthrough
         case .uiTestBundle:
@@ -58,13 +59,7 @@ extension AbstractTarget {
 }
 
 private extension AbstractTarget {
-    func generateFramework(rootPath: Path) -> [CreateBuildFileOperation] {
-        let targetRoot = path.string
-        let sourcePaths = sourceFiles.map { sourceFile in
-            let fullPath = sourceFile.path.isAbsolute ? sourceFile.path : (rootPath + sourceFile.path)
-            return fullPath.string.removePrefix(prefix: targetRoot).removePrefix(prefix: "/")
-        }
-
+    func generateFramework(projectRoot: Path) -> [CreateBuildFileOperation] {
         let infoPlistDirectory = Path(infoPlistPath.url.deletingLastPathComponent().path)
         let infoPlistBuildFilePath = infoPlistDirectory + "BUILD.bazel"
 
@@ -72,11 +67,11 @@ private extension AbstractTarget {
 
         let infoPlistLabel = "\(name)_InfoPlist"
 
-        let infoPlistLabelFromCurrentTarget = "/" + infoPlistDirectory.string.removePrefix(prefix: rootPath.string) + ":\(infoPlistLabel)"
+        let infoPlistLabelFromCurrentTarget = "/" + infoPlistDirectory.string.removePrefix(prefix: projectRoot.string) + ":\(infoPlistLabel)"
 
         return [
-            CreateBuildFileOperation(targetPath: buildFilePath(rootPath: rootPath), rules: [
-                .swiftLibrary(name: swiftLibraryName, srcs: sourcePaths, deps: dependencyLabels, moduleName: name),
+            CreateBuildFileOperation(targetPath: buildFilePath(projectRoot: projectRoot), rules: [
+                .swiftLibrary(name: swiftLibraryName, srcs: sourcePathStrings(projectRoot: projectRoot), deps: dependencyLabels, moduleName: name),
                 .iosFramework(name: name, deps: [":\(swiftLibraryName)"], bundleID: bundleIdentifier, minimumOSVersion: deploymentTarget.iOS ?? "13.0", deviceFamilies: deviceFamilies, infoPlists: [infoPlistLabelFromCurrentTarget]),
             ]),
             CreateBuildFileOperation(targetPath: infoPlistBuildFilePath, rules: [
@@ -87,17 +82,11 @@ private extension AbstractTarget {
         ]
     }
 
-    func generatePhoneOSApplication(rootPath: Path) -> [CreateBuildFileOperation] {
-        let targetRoot = path.string
-        let sourcePaths = sourceFiles.map { sourceFile in
-            let fullPath = sourceFile.path.isAbsolute ? sourceFile.path : (rootPath + sourceFile.path)
-            return fullPath.string.removePrefix(prefix: targetRoot).removePrefix(prefix: "/")
-        }
-
+    func generatePhoneOSApplication(projectRoot: Path) -> [CreateBuildFileOperation] {
         let sourceName = "\(name)_source"
         let mainTargetSource: BazelRule = .swiftLibrary(
             name: sourceName,
-            srcs: sourcePaths,
+            srcs: sourcePathStrings(projectRoot: projectRoot),
             deps: dependencyLabels.map { dependencyLabel in
                 dependencyLabel + AbstractTargetBazelGenConstants.frameworkLibSuffix
             },
@@ -109,7 +98,7 @@ private extension AbstractTarget {
 
         let infoPlistLabel = "\(name)_InfoPlist"
 
-        let infoPlistLabelFromCurrentTarget = "/" + infoPlistDirectory.string.removePrefix(prefix: rootPath.string) + ":\(infoPlistLabel)"
+        let infoPlistLabelFromCurrentTarget = "/" + infoPlistDirectory.string.removePrefix(prefix: projectRoot.string) + ":\(infoPlistLabel)"
 
         let applicationBuildFilePath = path + "BUILD.bazel"
 
@@ -157,5 +146,17 @@ private extension AbstractTarget {
             families.append(.ipad)
         }
         return families
+    }
+
+    func normalizedTargetRootPath(projectRoot: Path) -> Path {
+        path.isAbsolute ? path : (projectRoot + path)
+    }
+
+    func sourcePathStrings(projectRoot: Path) -> [String] {
+        sourceFiles.map { sourceFile in
+            sourceFile.path.isAbsolute ? sourceFile.path : (projectRoot + sourceFile.path)
+        }.map { sourcePath in
+            sourcePath.relative(to: normalizedTargetRootPath(projectRoot: projectRoot)).string
+        }
     }
 }

@@ -32,7 +32,7 @@ public extension BazelGenerator {
         var buildFileOperations: [Path: [CreateBuildFileOperation]] = [:]
 
         for target in project.targets {
-            guard let createBuildFileOperations = try? target.generateBazelFileCreateOperations(rootPath: project.rootPath) else {
+            guard let createBuildFileOperations = try? target.generateBazelFileCreateOperations(projectRoot: project.rootPath) else {
                 // TODO: Test all supported product types
                 logger.critical("Failed to generate Bazel file for target: \(target.name) because of unsupported product type: \(target.productType)")
                 continue
