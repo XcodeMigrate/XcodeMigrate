@@ -60,19 +60,6 @@ extension AbstractTarget {
 
 private extension AbstractTarget {
     func generateFramework(projectRoot: Path) -> [CreateBuildFileOperation] {
-        let normalizedTargetRootPath: Path
-        if path.isAbsolute {
-            normalizedTargetRootPath = path
-        } else {
-            normalizedTargetRootPath = projectRoot + path
-        }
-        let sourcePaths = sourceFiles.map { sourceFile in
-            sourceFile.path.isAbsolute ? sourceFile.path : (projectRoot + sourceFile.path)
-        }
-        let sourcePathStrings = sourcePaths.map { sourcePath in
-            sourcePath.relative(to: normalizedTargetRootPath).string
-        }
-
         let infoPlistDirectory = Path(infoPlistPath.url.deletingLastPathComponent().path)
         let infoPlistBuildFilePath = infoPlistDirectory + "BUILD.bazel"
 
@@ -84,7 +71,7 @@ private extension AbstractTarget {
 
         return [
             CreateBuildFileOperation(targetPath: buildFilePath(projectRoot: projectRoot), rules: [
-                .swiftLibrary(name: swiftLibraryName, srcs: sourcePathStrings, deps: dependencyLabels, moduleName: name),
+                .swiftLibrary(name: swiftLibraryName, srcs: sourcePathStrings(projectRoot: projectRoot), deps: dependencyLabels, moduleName: name),
                 .iosFramework(name: name, deps: [":\(swiftLibraryName)"], bundleID: bundleIdentifier, minimumOSVersion: deploymentTarget.iOS ?? "13.0", deviceFamilies: deviceFamilies, infoPlists: [infoPlistLabelFromCurrentTarget]),
             ]),
             CreateBuildFileOperation(targetPath: infoPlistBuildFilePath, rules: [
@@ -96,16 +83,10 @@ private extension AbstractTarget {
     }
 
     func generatePhoneOSApplication(projectRoot: Path) -> [CreateBuildFileOperation] {
-        let targetRoot = path.string
-        let sourcePaths = sourceFiles.map { sourceFile in
-            let fullPath = sourceFile.path.isAbsolute ? sourceFile.path : (projectRoot + sourceFile.path)
-            return fullPath.string.removePrefix(prefix: targetRoot).removePrefix(prefix: "/")
-        }
-
         let sourceName = "\(name)_source"
         let mainTargetSource: BazelRule = .swiftLibrary(
             name: sourceName,
-            srcs: sourcePaths,
+            srcs: sourcePathStrings(projectRoot: projectRoot),
             deps: dependencyLabels.map { dependencyLabel in
                 dependencyLabel + AbstractTargetBazelGenConstants.frameworkLibSuffix
             },
@@ -165,5 +146,17 @@ private extension AbstractTarget {
             families.append(.ipad)
         }
         return families
+    }
+
+    func normalizedTargetRootPath(projectRoot: Path) -> Path {
+        path.isAbsolute ? path : (projectRoot + path)
+    }
+
+    func sourcePathStrings(projectRoot: Path) -> [String] {
+        sourceFiles.map { sourceFile in
+            sourceFile.path.isAbsolute ? sourceFile.path : (projectRoot + sourceFile.path)
+        }.map { sourcePath in
+            sourcePath.relative(to: normalizedTargetRootPath(projectRoot: projectRoot)).string
+        }
     }
 }
