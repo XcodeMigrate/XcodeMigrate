@@ -36,7 +36,7 @@ final class AbstractTargetPlusBazelGenTests: XCTestCase {
             targetDevice: [.iphone, .ipad]
         )
 
-        let generatedOperations = try target.generateBazelFileCreateOperations(rootPath: sampleRootPath)
+        let generatedOperations = try target.generateBazelFileCreateOperations(projectRoot: sampleRootPath)
 
         let expectedOperations: [CreateBuildFileOperation] = [
             CreateBuildFileOperation(
@@ -89,7 +89,7 @@ final class AbstractTargetPlusBazelGenTests: XCTestCase {
         let dependency2 = AbstractTarget(name: "Dependency2", productType: .framework, bundleIdentifier: "com.example.Dependency2", path: Path("Dependency2"), sourceFiles: [], dependencies: [], infoPlistPath: sampleRootPath + Path("Path/To/Info.plist"), deploymentTarget: DeploymentTarget(iOS: "13.0"), targetDevice: [.iphone])
         let target = AbstractTarget(name: "SampleTarget", productType: .framework, bundleIdentifier: "com.example.SampleTarget", path: Path(targetName), sourceFiles: sourceFiles, dependencies: [dependency1, dependency2], infoPlistPath: sampleRootPath + Path("Path/To/Info.plist"), deploymentTarget: DeploymentTarget(iOS: "13.0"), targetDevice: [.iphone])
 
-        let generatedOperations = try target.generateBazelFileCreateOperations(rootPath: sampleRootPath)
+        let generatedOperations = try target.generateBazelFileCreateOperations(projectRoot: sampleRootPath)
 
         let expectedOperations: [CreateBuildFileOperation] = [
             CreateBuildFileOperation(
