@@ -44,7 +44,7 @@ final class AbstractTargetPlusBazelGenTests: XCTestCase {
                 rules: [
                     BazelRule.swiftLibrary(
                         name: "SampleTarget_lib",
-                        srcs: ["path/of/root/SampleTarget/Foo.swift", "path/of/root/SampleTarget/Bar.swift"],
+                        srcs: ["Foo.swift", "Bar.swift"],
                         deps: [],
                         moduleName: "SampleTarget"
                     ),
@@ -95,7 +95,7 @@ final class AbstractTargetPlusBazelGenTests: XCTestCase {
             CreateBuildFileOperation(
                 targetPath: "/path/of/root/SampleTarget/BUILD.bazel",
                 rules: [
-                    BazelRule.swiftLibrary(name: "SampleTarget_lib", srcs: ["path/of/root/SampleTarget/Foo.swift", "path/of/root/SampleTarget/Bar.swift"], deps: ["/Dependency1:Dependency1", "/Dependency2:Dependency2"], moduleName: "SampleTarget"),
+                    BazelRule.swiftLibrary(name: "SampleTarget_lib", srcs: ["Foo.swift", "Bar.swift"], deps: ["/Dependency1:Dependency1", "/Dependency2:Dependency2"], moduleName: "SampleTarget"),
                     BazelRule.iosFramework(name: "SampleTarget", deps: [":SampleTarget_lib"], bundleID: "com.example.SampleTarget", minimumOSVersion: "13.0", deviceFamilies: [BazelRule.DeviceFamily.iphone], infoPlists: ["//Path/To:SampleTarget_InfoPlist"]),
                 ]
             ),
@@ -118,7 +118,32 @@ private extension AbstractTargetPlusBazelGenTests {
         XCTAssertEqual(lhs.targetPath, rhs.targetPath)
         XCTAssertEqual(lhs.rules.count, rhs.rules.count)
         for (index, rule) in lhs.rules.enumerated() {
-            XCTAssertEqual(rule, rhs.rules[index])
+            assertBazelRuleEqual(rule, rhs.rules[index])
+        }
+    }
+
+    func assertBazelRuleEqual(_ lhs: BazelRule, _ rhs: BazelRule) {
+        switch (lhs, rhs) {
+        case let (.iosFramework(lhsName, lhsDeps, lhsBundleID, lhsMinimumOSVersion, lhsDeviceFamilies, lhsInfoPlists),
+                  .iosFramework(rhsName, rhsDeps, rhsBundleID, rhsMinimumOSVersion, rhsDeviceFamilies, rhsInfoPlists)):
+            XCTAssertEqual(lhsName, rhsName)
+            XCTAssertEqual(lhsDeps, rhsDeps)
+            XCTAssertEqual(lhsBundleID, rhsBundleID)
+            XCTAssertEqual(lhsMinimumOSVersion, rhsMinimumOSVersion)
+            XCTAssertEqual(lhsDeviceFamilies, rhsDeviceFamilies)
+            XCTAssertEqual(lhsInfoPlists, rhsInfoPlists)
+        case let (.swiftLibrary(lhsName, lhsSrcs, lhsDeps, lhsModuleName),
+                  .swiftLibrary(rhsName, rhsSrcs, rhsDeps, rhsModuleName)):
+            XCTAssertEqual(lhsName, rhsName)
+            XCTAssertEqual(lhsSrcs, rhsSrcs)
+            XCTAssertEqual(lhsDeps, rhsDeps)
+            XCTAssertEqual(lhsModuleName, rhsModuleName)
+        case let (.filegroup(lhsName, lhsSrcs),
+                  .filegroup(rhsName, rhsSrcs)):
+            XCTAssertEqual(lhsName, rhsName)
+            XCTAssertEqual(lhsSrcs, rhsSrcs)
+        default:
+            XCTFail("BazelRule is not equal")
         }
     }
 }

@@ -11,7 +11,7 @@
 
 import PathKit
 
-extension Path {
+public extension Path {
     func relative(to path: Path) -> Path {
         let pathComponents = path.components
         let selfComponents = components

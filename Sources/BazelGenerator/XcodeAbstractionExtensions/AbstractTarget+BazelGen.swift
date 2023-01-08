@@ -9,6 +9,7 @@
 // THE SOFTWARE IS PROVIDED  AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+import Common
 import FoundationExtension
 import PathKit
 import XcodeAbstraction
@@ -59,10 +60,17 @@ extension AbstractTarget {
 
 private extension AbstractTarget {
     func generateFramework(projectRoot: Path) -> [CreateBuildFileOperation] {
-        let targetRoot = path.string
+        let normalizedTargetRootPath: Path
+        if path.isAbsolute {
+            normalizedTargetRootPath = path
+        } else {
+            normalizedTargetRootPath = projectRoot + path
+        }
         let sourcePaths = sourceFiles.map { sourceFile in
-            let fullPath = sourceFile.path.isAbsolute ? sourceFile.path : (projectRoot + sourceFile.path)
-            return fullPath.string.removePrefix(prefix: targetRoot).removePrefix(prefix: "/")
+            sourceFile.path.isAbsolute ? sourceFile.path : (projectRoot + sourceFile.path)
+        }
+        let sourcePathStrings = sourcePaths.map { sourcePath in
+            sourcePath.relative(to: normalizedTargetRootPath).string
         }
 
         let infoPlistDirectory = Path(infoPlistPath.url.deletingLastPathComponent().path)
@@ -76,7 +84,7 @@ private extension AbstractTarget {
 
         return [
             CreateBuildFileOperation(targetPath: buildFilePath(projectRoot: projectRoot), rules: [
-                .swiftLibrary(name: swiftLibraryName, srcs: sourcePaths, deps: dependencyLabels, moduleName: name),
+                .swiftLibrary(name: swiftLibraryName, srcs: sourcePathStrings, deps: dependencyLabels, moduleName: name),
                 .iosFramework(name: name, deps: [":\(swiftLibraryName)"], bundleID: bundleIdentifier, minimumOSVersion: deploymentTarget.iOS ?? "13.0", deviceFamilies: deviceFamilies, infoPlists: [infoPlistLabelFromCurrentTarget]),
             ]),
             CreateBuildFileOperation(targetPath: infoPlistBuildFilePath, rules: [
