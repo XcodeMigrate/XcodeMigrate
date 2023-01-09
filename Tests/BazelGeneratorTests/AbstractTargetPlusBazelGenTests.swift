@@ -126,14 +126,15 @@ private extension AbstractTargetPlusBazelGenTests {
 
     func assertBazelRuleEqual(_ lhs: BazelRule, _ rhs: BazelRule) {
         switch (lhs, rhs) {
-        case let (.iosFramework(lhsName, lhsDeps, lhsBundleID, lhsMinimumOSVersion, lhsDeviceFamilies, lhsInfoPlists),
-                  .iosFramework(rhsName, rhsDeps, rhsBundleID, rhsMinimumOSVersion, rhsDeviceFamilies, rhsInfoPlists)):
+        case let (.iosFramework(lhsName, lhsDeps, lhsBundleID, lhsMinimumOSVersion, lhsDeviceFamilies, lhsInfoPlists, lhsResources),
+                  .iosFramework(rhsName, rhsDeps, rhsBundleID, rhsMinimumOSVersion, rhsDeviceFamilies, rhsInfoPlists, rhsResources)):
             XCTAssertEqual(lhsName, rhsName)
             XCTAssertEqual(lhsDeps, rhsDeps)
             XCTAssertEqual(lhsBundleID, rhsBundleID)
             XCTAssertEqual(lhsMinimumOSVersion, rhsMinimumOSVersion)
             XCTAssertEqual(lhsDeviceFamilies, rhsDeviceFamilies)
             XCTAssertEqual(lhsInfoPlists, rhsInfoPlists)
+            XCTAssertEqual(lhsResources, rhsResources)
         case let (.swiftLibrary(lhsName, lhsSrcs, lhsDeps, lhsModuleName),
                   .swiftLibrary(rhsName, rhsSrcs, rhsDeps, rhsModuleName)):
             XCTAssertEqual(lhsName, rhsName)
