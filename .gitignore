@@ -8,4 +8,4 @@ DerivedData/
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 .netrc
 
-.swiftpm/xcode/xcshareddata/xcschemes/XcodeMigrate.xcscheme
+.swiftpm/xcode/xcshareddata/xcschemes/*.xcscheme
