@@ -47,5 +47,3 @@ public class XcodeParser {
         abstractProject = AbstractProject(targets: targets, rootPath: projectRoot)
     }
 }
-
-private extension XcodeParser {}

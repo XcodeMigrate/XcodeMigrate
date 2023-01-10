@@ -13,8 +13,8 @@ import XcodeAbstraction
 
 @frozen enum BazelRule: Hashable {
     case swiftLibrary(name: String, srcs: [String], deps: [String], moduleName: String)
-    case iosApplication(name: String, deps: [String], bundleID: String, infoplists: [String], minimumOSVersion: String, deviceFamilies: [BazelRule.DeviceFamily])
-    case iosFramework(name: String, deps: [String], bundleID: String, minimumOSVersion: String, deviceFamilies: [BazelRule.DeviceFamily], infoPlists: [String])
+    case iosApplication(name: String, deps: [String], bundleID: String, infoplists: [String], minimumOSVersion: String, deviceFamilies: [BazelRule.DeviceFamily], resources: [String])
+    case iosFramework(name: String, deps: [String], bundleID: String, minimumOSVersion: String, deviceFamilies: [BazelRule.DeviceFamily], infoPlists: [String], resources: [String])
     case filegroup(name: String, srcs: [String])
 }
 

@@ -10,6 +10,7 @@ ios_framework(
     ],
     infoplists = ["//Derived/InfoPlists:BasicFixtureProjectKit_InfoPlist"],
     minimum_os_version = "13.0",
+    resources = [],
     visibility = ["//visibility:public"],
     deps = [":BasicFixtureProjectKit_lib"],
 )

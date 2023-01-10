@@ -36,7 +36,7 @@ extension AbstractTarget {
             return nil
         }
 
-        let targetPath = try! AbstractTarget.findTargetRootPath(target: target, projectRoot: projectRoot)
+        let targetPath = try AbstractTarget.findTargetRootPath(target: target, projectRoot: projectRoot)
         let normalizedTargetPath: Path = {
             if targetPath.isAbsolute {
                 return targetPath
@@ -47,6 +47,18 @@ extension AbstractTarget {
 
         let sourceBuildPhase = try target.sourcesBuildPhase()
         let sourceFiles: [AbstractSourceFile]? = sourceBuildPhase?.files?.compactMap { file in
+            guard let fileElement = file.file else {
+                return nil
+            }
+            guard let abstractFile = AbstractSourceFile(from: fileElement) else {
+                return nil
+            }
+
+            return abstractFile
+        }
+
+        let resourceBuildPhase = try target.resourcesBuildPhase()
+        let resourceFiles: [AbstractSourceFile]? = resourceBuildPhase?.files?.compactMap { file in
             guard let fileElement = file.file else {
                 return nil
             }
@@ -115,6 +127,7 @@ extension AbstractTarget {
             bundleIdentifier: bundleID,
             path: normalizedTargetPath,
             sourceFiles: sourceFiles ?? [],
+            resources: resourceFiles ?? [],
             dependencies: dependencyTargets,
             infoPlistPath: infoPlistPath,
             deploymentTarget: deploymentTarget,

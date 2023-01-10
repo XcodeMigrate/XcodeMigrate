@@ -36,6 +36,7 @@ extension Project {
 
     /// Helper function to create a framework target and an associated unit test target
     private static func makeFrameworkTargets(name: String, platform: Platform) -> [Target] {
+        let resources: ResourceFileElements = name == "BasicFixtureProjectUI" ? ["Targets/\(name)/Resources/**"] : []
         let sources = Target(name: name,
                              platform: platform,
                              product: .framework,
@@ -43,7 +44,7 @@ extension Project {
                              deploymentTarget: Constants.deploymentTarget,
                              infoPlist: .default,
                              sources: ["Targets/\(name)/Sources/**"],
-                             resources: [],
+                             resources: resources,
                              dependencies: [])
         let tests = Target(name: "\(name)Tests",
                            platform: platform,
