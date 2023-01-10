@@ -97,7 +97,7 @@ final class AbstractTargetPlusBazelGenTests: XCTestCase {
             CreateBuildFileOperation(
                 targetPath: "/path/of/root/SampleTarget/BUILD.bazel",
                 rules: [
-                    BazelRule.swiftLibrary(name: "SampleTarget_lib", srcs: ["Foo.swift", "Bar.swift"], deps: ["/Dependency1:Dependency1", "/Dependency2:Dependency2"], moduleName: "SampleTarget"),
+                    BazelRule.swiftLibrary(name: "SampleTarget_lib", srcs: ["Foo.swift", "Bar.swift"], deps: ["//Dependency1:Dependency1", "//Dependency2:Dependency2"], moduleName: "SampleTarget"),
                     BazelRule.iosFramework(name: "SampleTarget", deps: [":SampleTarget_lib"], bundleID: "com.example.SampleTarget", minimumOSVersion: "13.0", deviceFamilies: [BazelRule.DeviceFamily.iphone], infoPlists: ["//Path/To:SampleTarget_InfoPlist"], resources: ["index.html"]),
                 ]
             ),
