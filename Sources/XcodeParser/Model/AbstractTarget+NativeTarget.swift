@@ -36,7 +36,7 @@ extension AbstractTarget {
             return nil
         }
 
-        let targetPath = try! AbstractTarget.findTargetRootPath(target: target, projectRoot: projectRoot)
+        let targetPath = try AbstractTarget.findTargetRootPath(target: target, projectRoot: projectRoot)
         let normalizedTargetPath: Path = {
             if targetPath.isAbsolute {
                 return targetPath

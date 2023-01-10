@@ -31,15 +31,15 @@ extension AbstractTarget {
             throw FindTargetRootPathError.noneFile
         }
 
-        let commomPrefix = String.commonPrefix(strings: fullPaths)
+        let commonPrefix = String.commonPrefix(strings: fullPaths)
 
-        if commomPrefix == fullPaths[0], let targetNameIndex = commomPrefix.index(of: target.name) {
-            let targetNameIndex = commomPrefix.index(targetNameIndex, offsetBy: target.name.count)
-            let targetNamePrefix = String(commomPrefix[..<targetNameIndex])
+        if commonPrefix == fullPaths[0], let targetNameIndex = commonPrefix.index(of: target.name) {
+            let targetNameIndex = commonPrefix.index(targetNameIndex, offsetBy: target.name.count)
+            let targetNamePrefix = String(commonPrefix[..<targetNameIndex])
             return Path(targetNamePrefix)
         }
 
-        let defaultPath = Path(commomPrefix)
+        let defaultPath = Path(commonPrefix)
 
         return defaultPath
     }

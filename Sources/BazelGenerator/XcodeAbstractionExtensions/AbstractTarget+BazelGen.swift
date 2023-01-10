@@ -78,7 +78,7 @@ private extension AbstractTarget {
                               minimumOSVersion: deploymentTarget.iOS ?? "13.0",
                               deviceFamilies: deviceFamilies,
                               infoPlists: [infoPlistLabelFromCurrentTarget],
-                              resources: resourceLabels), // TODO: Normalize Path: <https://github.com/XcodeMigrate/XcodeMigrate/issues/6>
+                              resources: resourceLabels(projectRoot: projectRoot)), // TODO: Normalize Path: <https://github.com/XcodeMigrate/XcodeMigrate/issues/6>
             ]),
             CreateBuildFileOperation(targetPath: infoPlistBuildFilePath, rules: [
                 .filegroup(name: infoPlistLabel, srcs: [
@@ -119,7 +119,7 @@ private extension AbstractTarget {
                     infoplists: [infoPlistLabelFromCurrentTarget],
                     minimumOSVersion: deploymentTarget.iOS ?? "13.0",
                     deviceFamilies: deviceFamilies,
-                    resources: resourceLabels // TODO: Normalize Path: <https://github.com/XcodeMigrate/XcodeMigrate/issues/6>
+                    resources: resourceLabels(projectRoot: projectRoot)
                 ),
                 mainTargetSource,
             ]),
@@ -155,8 +155,12 @@ private extension AbstractTarget {
         return families
     }
 
-    var resourceLabels: [String] {
-        resources.map(\.path).map(\.string)
+    func resourceLabels(projectRoot: Path) -> [String] {
+        resources.map { resourceFile in
+            resourceFile.path.isAbsolute ? resourceFile.path : (projectRoot + resourceFile.path)
+        }.map { resourcePath in
+            resourcePath.relative(to: normalizedTargetRootPath(projectRoot: projectRoot)).string
+        }
     }
 
     func normalizedTargetRootPath(projectRoot: Path) -> Path {
