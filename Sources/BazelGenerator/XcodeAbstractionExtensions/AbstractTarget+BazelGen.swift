@@ -136,7 +136,8 @@ private extension AbstractTarget {
     func dependencyLabels(projectRoot: Path) -> [String] {
         dependencies.map { dependency in
             let dependencyRelativePath = dependency.path.relative(to: projectRoot)
-            return "/\(dependencyRelativePath.string):\(dependency.name)"
+            let prefix = dependencyRelativePath.string == "." ? "" : "//\(dependencyRelativePath.string)"
+            return "\(prefix):\(dependency.name)"
         }
     }
 
