@@ -71,7 +71,7 @@ private extension AbstractTarget {
 
         return [
             CreateBuildFileOperation(targetPath: buildFilePath(projectRoot: projectRoot), rules: [
-                .swiftLibrary(name: swiftLibraryName, srcs: sourcePathStrings(projectRoot: projectRoot), deps: dependencyLabels, moduleName: name),
+                .swiftLibrary(name: swiftLibraryName, srcs: sourcePathStrings(projectRoot: projectRoot), deps: dependencyLabels(projectRoot: projectRoot), moduleName: name),
                 .iosFramework(name: name,
                               deps: [":\(swiftLibraryName)"], // TODO: Normalize Path: <https://github.com/XcodeMigrate/XcodeMigrate/issues/6>
                               bundleID: bundleIdentifier,
@@ -93,7 +93,7 @@ private extension AbstractTarget {
         let mainTargetSource: BazelRule = .swiftLibrary(
             name: sourceName,
             srcs: sourcePathStrings(projectRoot: projectRoot),
-            deps: dependencyLabels.map { dependencyLabel in
+            deps: dependencyLabels(projectRoot: projectRoot).map { dependencyLabel in
                 dependencyLabel + AbstractTargetBazelGenConstants.frameworkLibSuffix
             },
             moduleName: name
@@ -114,7 +114,7 @@ private extension AbstractTarget {
                     name: name,
                     deps: [
                         ":\(sourceName)",
-                    ] + dependencyLabels, // TODO: Normalize Path: <https://github.com/XcodeMigrate/XcodeMigrate/issues/6>
+                    ] + dependencyLabels(projectRoot: projectRoot),
                     bundleID: bundleIdentifier,
                     infoplists: [infoPlistLabelFromCurrentTarget],
                     minimumOSVersion: deploymentTarget.iOS ?? "13.0",
@@ -133,14 +133,10 @@ private extension AbstractTarget {
 }
 
 private extension AbstractTarget {
-    var dependencyLabels: [String] {
+    func dependencyLabels(projectRoot: Path) -> [String] {
         dependencies.map { dependency in
-            let commonPathPrefix = String.commonPrefix(strings: [
-                self.path.string,
-                dependency.path.string,
-            ])
-            let dependencyLabelWithOutCommonPath = dependency.path.string[commonPathPrefix.endIndex...]
-            return "/\(dependencyLabelWithOutCommonPath):\(dependency.name)"
+            let dependencyRelativePath = dependency.path.relative(to: projectRoot)
+            return "/\(dependencyRelativePath.string):\(dependency.name)"
         }
     }
 

@@ -1,5 +1,4 @@
-load("@build_bazel_rules_apple//apple:ios.bzl", "ios_application")
-load("@build_bazel_rules_apple//apple:ios.bzl", "ios_framework")
+load("@build_bazel_rules_apple//apple:ios.bzl", "ios_application", "ios_framework")
 load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
 
 ios_application(
@@ -13,7 +12,7 @@ ios_application(
     minimum_os_version = "13.0",
     resources = ["Targets/BasicFixtureProject/Resources/LaunchScreen.storyboard"],
     deps = [
-        "/:BasicFixtureProjectUI",
+        ":BasicFixtureProjectUI",
         ":BasicFixtureProject_source",
         "//Targets/BasicFixtureProjectKit",
     ],
@@ -28,7 +27,7 @@ swift_library(
     module_name = "BasicFixtureProject",
     visibility = ["//visibility:public"],
     deps = [
-        "/:BasicFixtureProjectUI_lib",
+        ":BasicFixtureProjectUI_lib",
         "//Targets/BasicFixtureProjectKit:BasicFixtureProjectKit_lib",
     ],
 )
