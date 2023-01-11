@@ -14,7 +14,7 @@ import FoundationExtension
 import PathKit
 import XcodeAbstraction
 
-private enum AbstractTargetBazelGenConstants {
+enum AbstractTargetBazelGenConstants {
     static let frameworkLibSuffix = "_lib"
 }
 
@@ -49,7 +49,7 @@ extension AbstractTarget {
         case .application:
             return generatePhoneOSApplication(projectRoot: projectRoot)
         case .unitTestBundle:
-            fallthrough
+            return generateUnitTestBundle(projectRoot: projectRoot)
         case .uiTestBundle:
             fallthrough
         default:
@@ -132,7 +132,7 @@ private extension AbstractTarget {
     }
 }
 
-private extension AbstractTarget {
+extension AbstractTarget {
     func dependencyLabels(projectRoot: Path) -> [String] {
         dependencies.map { dependency in
             let dependencyRelativePath = dependency.path.relative(to: projectRoot)

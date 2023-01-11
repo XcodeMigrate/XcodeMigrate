@@ -41,6 +41,16 @@ extension BazelRule {
                 .attr(key: "visibility", value: ["//visibility:public"])
                 .attr(key: "deps", value: deps.sorted())
                 .attr(key: "resources", value: resources)
+        case let .iosUnitTest(name, data, deps, env, platformType, runner, testFilter, testHost):
+            return Rule(name: "ios_unit_test")
+                .attr(key: "name", value: name)
+                .attr(key: "data", value: data)
+                .attr(key: "deps", value: deps.sorted())
+                .attr(key: "env", value: env)
+                .attr(key: "platform_type", value: platformType.rawValue)
+                .attr(key: "runner", value: runner)
+                .attr(key: "test_filter", value: testFilter)
+                .attr(key: "test_host", value: testHost)
         case let .filegroup(name, srcs):
             return Rule(name: "filegroup")
                 .attr(key: "name", value: name)
