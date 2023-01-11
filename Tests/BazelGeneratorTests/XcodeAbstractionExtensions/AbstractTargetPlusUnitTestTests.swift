@@ -54,6 +54,7 @@ class AbstractTargetPlusUnitTestTests: XCTestCase {
                         name: "SampleTargetTests",
                         data: [],
                         deps: [":SampleTargetTests_source"],
+                        minimumOSVersion: "12.0",
                         env: [:],
                         platformType: .iphone,
                         runner: "@build_bazel_rules_apple//apple/testing/default_runner:ios_xctestrun_ordered_runner",
