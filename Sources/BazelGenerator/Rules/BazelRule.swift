@@ -13,8 +13,13 @@ import XcodeAbstraction
 
 @frozen enum BazelRule: Hashable {
     case swiftLibrary(name: String, srcs: [String], deps: [String], moduleName: String)
+    case swiftTest(name: String, srcs: [String], deps: [String], moduleName: String)
     case iosApplication(name: String, deps: [String], bundleID: String, infoplists: [String], minimumOSVersion: String, deviceFamilies: [BazelRule.DeviceFamily], resources: [String])
     case iosFramework(name: String, deps: [String], bundleID: String, minimumOSVersion: String, deviceFamilies: [BazelRule.DeviceFamily], infoPlists: [String], resources: [String])
+
+    /// iOS Unit Test
+    /// <https://github.com/bazelbuild/rules_apple/blob/master/doc/rules-ios.md#ios_unit_test>
+    case iosUnitTest(name: String, data: [String], deps: [String], minimumOSVersion: String, env: [String: String], platformType: BazelRule.DeviceFamily, runner: String, testFilter: String, testHost: String)
     case filegroup(name: String, srcs: [String])
 }
 
@@ -23,12 +28,33 @@ extension BazelRule {
         switch self {
         case .swiftLibrary:
             return .swift
+        case .swiftTest:
+            return .swift
         case .iosApplication:
             return .apple
         case .iosFramework:
             return .apple
+        case .iosUnitTest:
+            return .apple
         case .filegroup:
             return .builtIn
+        }
+    }
+
+    var ruleLabel: String {
+        switch self {
+        case let .swiftLibrary(name, _, _, _):
+            return name
+        case let .swiftTest(name, _, _, _):
+            return name
+        case let .iosApplication(name, _, _, _, _, _, _):
+            return name
+        case let .iosFramework(name, _, _, _, _, _, _):
+            return name
+        case let .iosUnitTest(name, _, _, _, _, _, _, _, _):
+            return name
+        case let .filegroup(name, _):
+            return name
         }
     }
 }
@@ -44,12 +70,20 @@ extension BazelRule {
             return """
             load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
             """
+        case .swiftTest:
+            return """
+            load("@build_bazel_rules_swift//swift:swift.bzl", "swift_test")
+            """
         case .iosApplication:
             return """
             load("@build_bazel_rules_apple//apple:ios.bzl", "ios_application")
             """
         case .iosFramework:
             return #"load("@build_bazel_rules_apple//apple:ios.bzl", "ios_framework")"#
+        case .iosUnitTest:
+            return """
+            load("@build_bazel_rules_apple//apple:ios.bzl", "ios_unit_test")
+            """
         case .filegroup:
             return ""
         }

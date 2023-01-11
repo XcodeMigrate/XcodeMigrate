@@ -14,7 +14,7 @@ import FoundationExtension
 import PathKit
 import XcodeAbstraction
 
-private enum AbstractTargetBazelGenConstants {
+enum AbstractTargetBazelGenConstants {
     static let frameworkLibSuffix = "_lib"
 }
 
@@ -30,14 +30,12 @@ enum BazelGeneratorAbstractTargetError: Error {
 }
 
 extension AbstractTarget {
-    func buildFilePath(projectRoot: Path) -> Path {
-        let buildFilePath = path + "BUILD.bazel"
-        guard !buildFilePath.isAbsolute else {
-            return buildFilePath
+    func buildFilePath(projectRoot _: Path) -> Path {
+        if !path.isAbsolute {
+            fatalError("not absolute target path: \(path)")
         }
-
-        let normalizedBuildFilePath = projectRoot + buildFilePath
-        return normalizedBuildFilePath
+        let buildFilePath = path + "BUILD.bazel"
+        return buildFilePath
     }
 }
 
@@ -49,7 +47,7 @@ extension AbstractTarget {
         case .application:
             return generatePhoneOSApplication(projectRoot: projectRoot)
         case .unitTestBundle:
-            fallthrough
+            return generateUnitTestBundle(projectRoot: projectRoot)
         case .uiTestBundle:
             fallthrough
         default:
@@ -132,11 +130,14 @@ private extension AbstractTarget {
     }
 }
 
-private extension AbstractTarget {
+extension AbstractTarget {
     func dependencyLabels(projectRoot: Path) -> [String] {
         dependencies.map { dependency in
-            let dependencyRelativePath = dependency.path.relative(to: projectRoot)
-            let prefix = dependencyRelativePath.string == "." ? "" : "//\(dependencyRelativePath.string)"
+            let dependencyRelativePath = dependency.path.relative(from: projectRoot)
+            let isTargetRootSameAsProjectRoot = path == projectRoot
+            let isDependencyAtRoot = dependencyRelativePath.string == "."
+
+            let prefix = dependencyRelativePath.string == "." ? "//" : "//\(dependencyRelativePath.string)"
             return "\(prefix):\(dependency.name)"
         }
     }
@@ -156,7 +157,7 @@ private extension AbstractTarget {
         resources.map { resourceFile in
             resourceFile.path.isAbsolute ? resourceFile.path : (projectRoot + resourceFile.path)
         }.map { resourcePath in
-            resourcePath.relative(to: normalizedTargetRootPath(projectRoot: projectRoot)).string
+            resourcePath.relative(from: normalizedTargetRootPath(projectRoot: projectRoot)).string
         }
     }
 
@@ -168,7 +169,7 @@ private extension AbstractTarget {
         sourceFiles.map { sourceFile in
             sourceFile.path.isAbsolute ? sourceFile.path : (projectRoot + sourceFile.path)
         }.map { sourcePath in
-            sourcePath.relative(to: normalizedTargetRootPath(projectRoot: projectRoot)).string
+            sourcePath.relative(from: normalizedTargetRootPath(projectRoot: projectRoot)).string
         }
     }
 }

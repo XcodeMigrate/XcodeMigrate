@@ -13,9 +13,9 @@ ios_application(
     minimum_os_version = "13.0",
     resources = ["Targets/BasicFixtureProject/Resources/LaunchScreen.storyboard"],
     deps = [
-        ":BasicFixtureProjectUI",
         ":BasicFixtureProject_source",
-        "//Targets/BasicFixtureProjectKit",
+        "//:BasicFixtureProjectUI",
+        "//Targets/BasicFixtureProjectKit/Sources:BasicFixtureProjectKit",
     ],
 )
 
@@ -28,8 +28,8 @@ swift_library(
     module_name = "BasicFixtureProject",
     visibility = ["//visibility:public"],
     deps = [
-        ":BasicFixtureProjectUI_lib",
-        "//Targets/BasicFixtureProjectKit:BasicFixtureProjectKit_lib",
+        "//:BasicFixtureProjectUI_lib",
+        "//Targets/BasicFixtureProjectKit/Sources:BasicFixtureProjectKit_lib",
     ],
 )
 

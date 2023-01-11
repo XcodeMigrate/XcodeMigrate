@@ -1,5 +1,5 @@
 //
-// PathKit+RelativePath.swift
+// Dictionary+AttributeContentConvertible.swift
 // Copyright (c) 2023 Daohan Chong and other XcodeMigrate authors.
 // MIT License.
 //
@@ -9,24 +9,10 @@
 // THE SOFTWARE IS PROVIDED  AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import PathKit
+import Foundation
 
-public extension Path {
-    func relative(from path: Path) -> Path {
-        let pathComponents = path.components
-        let selfComponents = components
-
-        var commonPrefixLength = 0
-        for (pathComponent, selfComponent) in zip(pathComponents, selfComponents) {
-            if pathComponent == selfComponent {
-                commonPrefixLength += 1
-            } else {
-                break
-            }
-        }
-
-        let relativeComponents = Array(repeating: "..", count: pathComponents.count - commonPrefixLength) + selfComponents[commonPrefixLength...]
-
-        return Path(components: relativeComponents)
+extension Dictionary: AttributeContentConvertible where Key: AttributeContentConvertible, Value: AttributeContentConvertible {
+    public func toAttributeContent() -> String {
+        "{" + map { "\($0.key.toAttributeContent()): \($0.value.toAttributeContent())" }.joined(separator: "\n,") + "}"
     }
 }

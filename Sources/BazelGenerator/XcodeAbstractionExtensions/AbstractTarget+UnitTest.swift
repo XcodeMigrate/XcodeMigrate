@@ -1,5 +1,5 @@
 //
-// AbstractTarget+FindRootPath.swift
+// AbstractTarget+UnitTest.swift
 // Copyright (c) 2023 Daohan Chong and other XcodeMigrate authors.
 // MIT License.
 //
@@ -9,42 +9,34 @@
 // THE SOFTWARE IS PROVIDED  AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+import Common
 import FoundationExtension
 import PathKit
 import XcodeAbstraction
-import XcodeProj
 
 extension AbstractTarget {
-    enum FindTargetRootPathError: Error {
-        case noneFile
-    }
+    func generateUnitTestBundle(projectRoot: Path) -> [CreateBuildFileOperation] {
+        let targetSource = targetSourceSwift(projectRoot: projectRoot)
+        let sourceLabel = targetSource.ruleLabel
 
-    static func findTargetRootPath(target: PBXNativeTarget, projectRoot _: Path) throws -> Path {
-        guard let sourceFiles = try target.sourcesBuildPhase()?.files else {
-            throw FindTargetRootPathError.noneFile
-        }
-        let fileElements = sourceFiles.compactMap(\.file)
-
-        let fullPaths = fileElements.compactMap { $0.filePathFromRoot() }
-
-        if fullPaths.isEmpty {
-            throw FindTargetRootPathError.noneFile
-        }
-
-        if fullPaths.count == 1 {
-            return Path(fullPaths[0]).parent()
-        }
-
-        let commonPrefix = String.commonPrefix(strings: fullPaths)
-
-        if commonPrefix == fullPaths[0], let targetNameIndex = commonPrefix.index(of: target.name) {
-            let targetNameIndex = commonPrefix.index(targetNameIndex, offsetBy: target.name.count)
-            let targetNamePrefix = String(commonPrefix[..<targetNameIndex])
-            return Path(targetNamePrefix)
-        }
-
-        let defaultPath = Path(commonPrefix)
-
-        return defaultPath
+        return [
+            CreateBuildFileOperation(
+                targetPath: buildFilePath(projectRoot: projectRoot),
+                rules: [
+                    targetSource,
+                    .iosUnitTest(
+                        name: name,
+                        data: [],
+                        deps: [":\(sourceLabel)"],
+                        minimumOSVersion: deploymentTarget.iOS ?? "13.0",
+                        env: [:],
+                        platformType: .iphone,
+                        runner: "@build_bazel_rules_apple//apple/testing/default_runner:ios_xctestrun_ordered_runner",
+                        testFilter: "",
+                        testHost: ""
+                    ),
+                ]
+            ),
+        ]
     }
 }

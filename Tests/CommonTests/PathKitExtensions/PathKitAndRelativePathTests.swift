@@ -16,19 +16,19 @@ import XCTest
 class PathKitAndRelativePathTests: XCTestCase {
     func testRelativeParentPath() {
         let path = Path("/Users/username/Documents/Projects/XcodeMigrate")
-        let relativePath = path.relative(to: Path("/Users/username/Documents/Projects/XcodeMigrate/Sources"))
+        let relativePath = path.relative(from: Path("/Users/username/Documents/Projects/XcodeMigrate/Sources"))
         XCTAssertEqual(relativePath.string, "..")
     }
 
     func testRelativePathChild() {
         let path = Path("/Users/username/Documents/Projects/XcodeMigrate/Sources")
-        let relativePath = path.relative(to: Path("/Users/username/Documents/Projects/XcodeMigrate"))
+        let relativePath = path.relative(from: Path("/Users/username/Documents/Projects/XcodeMigrate"))
         XCTAssertEqual(relativePath.string, "Sources")
     }
 
     func testRelativePathSibling() {
         let path = Path("/Users/username/Documents/Projects/XcodeMigrate/Sources")
-        let relativePath = path.relative(to: Path("/Users/username/Documents/Projects/XcodeMigrate/Tests"))
+        let relativePath = path.relative(from: Path("/Users/username/Documents/Projects/XcodeMigrate/Tests"))
         XCTAssertEqual(relativePath.string, "../Sources")
     }
 }

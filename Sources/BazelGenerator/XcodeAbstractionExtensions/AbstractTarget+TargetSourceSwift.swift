@@ -1,5 +1,5 @@
 //
-// AbstractTarget+FindRootPath.swift
+// AbstractTarget+TargetSourceSwift.swift
 // Copyright (c) 2023 Daohan Chong and other XcodeMigrate authors.
 // MIT License.
 //
@@ -9,42 +9,36 @@
 // THE SOFTWARE IS PROVIDED  AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import FoundationExtension
 import PathKit
 import XcodeAbstraction
-import XcodeProj
 
 extension AbstractTarget {
-    enum FindTargetRootPathError: Error {
-        case noneFile
-    }
-
-    static func findTargetRootPath(target: PBXNativeTarget, projectRoot _: Path) throws -> Path {
-        guard let sourceFiles = try target.sourcesBuildPhase()?.files else {
-            throw FindTargetRootPathError.noneFile
+    func targetSourceSwift(projectRoot: Path) -> BazelRule {
+        let sourceName = "\(name)_source"
+        let srcs = sourcePathStrings(projectRoot: projectRoot)
+        let deps = dependencyLabels(projectRoot: projectRoot).map { dependencyLabel in
+            dependencyLabel + AbstractTargetBazelGenConstants.frameworkLibSuffix
         }
-        let fileElements = sourceFiles.compactMap(\.file)
+        let moduleName = name
+        let targetSource: BazelRule
 
-        let fullPaths = fileElements.compactMap { $0.filePathFromRoot() }
-
-        if fullPaths.isEmpty {
-            throw FindTargetRootPathError.noneFile
-        }
-
-        if fullPaths.count == 1 {
-            return Path(fullPaths[0]).parent()
-        }
-
-        let commonPrefix = String.commonPrefix(strings: fullPaths)
-
-        if commonPrefix == fullPaths[0], let targetNameIndex = commonPrefix.index(of: target.name) {
-            let targetNameIndex = commonPrefix.index(targetNameIndex, offsetBy: target.name.count)
-            let targetNamePrefix = String(commonPrefix[..<targetNameIndex])
-            return Path(targetNamePrefix)
+        switch productType {
+        case .unitTestBundle, .uiTestBundle:
+            targetSource = .swiftTest(
+                name: sourceName,
+                srcs: srcs,
+                deps: deps,
+                moduleName: moduleName
+            )
+        default:
+            targetSource = .swiftLibrary(
+                name: sourceName,
+                srcs: srcs,
+                deps: deps,
+                moduleName: moduleName
+            )
         }
 
-        let defaultPath = Path(commonPrefix)
-
-        return defaultPath
+        return targetSource
     }
 }
