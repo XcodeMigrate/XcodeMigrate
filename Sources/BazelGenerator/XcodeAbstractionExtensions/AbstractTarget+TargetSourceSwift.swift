@@ -13,32 +13,32 @@ import PathKit
 import XcodeAbstraction
 
 extension AbstractTarget {
-  func targetSourceSwift(projectRoot: Path) -> BazelRule {
-    let sourceName = "\(name)_source"
-    let srcs = sourcePathStrings(projectRoot: projectRoot)
-    let deps = dependencyLabels(projectRoot: projectRoot).map { dependencyLabel in
-      dependencyLabel + AbstractTargetBazelGenConstants.frameworkLibSuffix
-    }
-    let moduleName = name
-    let targetSource: BazelRule
+    func targetSourceSwift(projectRoot: Path) -> BazelRule {
+        let sourceName = "\(name)_source"
+        let srcs = sourcePathStrings(projectRoot: projectRoot)
+        let deps = dependencyLabels(projectRoot: projectRoot).map { dependencyLabel in
+            dependencyLabel + AbstractTargetBazelGenConstants.frameworkLibSuffix
+        }
+        let moduleName = name
+        let targetSource: BazelRule
 
-    switch productType {
-    case .unitTestBundle, .uiTestBundle:
-      targetSource = .swiftTest(
-        name: sourceName,
-        srcs: srcs,
-        deps: deps,
-        moduleName: moduleName
-      )
-    default:
-      targetSource = .swiftLibrary(
-        name: sourceName,
-        srcs: srcs,
-        deps: deps,
-        moduleName: moduleName
-      )
-    }
+        switch productType {
+        case .unitTestBundle, .uiTestBundle:
+            targetSource = .swiftTest(
+                name: sourceName,
+                srcs: srcs,
+                deps: deps,
+                moduleName: moduleName
+            )
+        default:
+            targetSource = .swiftLibrary(
+                name: sourceName,
+                srcs: srcs,
+                deps: deps,
+                moduleName: moduleName
+            )
+        }
 
-    return targetSource
-  }
+        return targetSource
+    }
 }

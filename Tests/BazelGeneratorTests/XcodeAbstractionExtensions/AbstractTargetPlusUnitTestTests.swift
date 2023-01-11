@@ -46,7 +46,7 @@ class AbstractTargetPlusUnitTestTests: XCTestCase {
                 rules: [
                     .swiftLibrary(
                         name: "SampleTargetTests_source",
-                        srcs: dummySourceFiles.map { $0.relative(to: dummyProjectRoot).string },
+                        srcs: dummySourceFiles.map { $0.relative(from: dummyProjectRoot).string },
                         deps: [],
                         moduleName: "SampleTargetTests"
                     ),

@@ -15,28 +15,28 @@ import PathKit
 import XcodeAbstraction
 
 extension AbstractTarget {
-  func generateUnitTestBundle(projectRoot: Path) -> [CreateBuildFileOperation] {
-    let targetSource = targetSourceSwift(projectRoot: projectRoot)
-    let sourceLabel = targetSource.ruleLabel
+    func generateUnitTestBundle(projectRoot: Path) -> [CreateBuildFileOperation] {
+        let targetSource = targetSourceSwift(projectRoot: projectRoot)
+        let sourceLabel = targetSource.ruleLabel
 
-    return [
-      CreateBuildFileOperation(
-        targetPath: buildFilePath(projectRoot: projectRoot),
-        rules: [
-          targetSource,
-          .iosUnitTest(
-            name: name,
-            data: [],
-            deps: [":\(sourceLabel)"],
-            minimumOSVersion: deploymentTarget.iOS ?? "13.0",
-            env: [:],
-            platformType: .iphone,
-            runner: "@build_bazel_rules_apple//apple/testing/default_runner:ios_xctestrun_ordered_runner",
-            testFilter: "",
-            testHost: ""
-          ),
+        return [
+            CreateBuildFileOperation(
+                targetPath: buildFilePath(projectRoot: projectRoot),
+                rules: [
+                    targetSource,
+                    .iosUnitTest(
+                        name: name,
+                        data: [],
+                        deps: [":\(sourceLabel)"],
+                        minimumOSVersion: deploymentTarget.iOS ?? "13.0",
+                        env: [:],
+                        platformType: .iphone,
+                        runner: "@build_bazel_rules_apple//apple/testing/default_runner:ios_xctestrun_ordered_runner",
+                        testFilter: "",
+                        testHost: ""
+                    ),
+                ]
+            ),
         ]
-      ),
-    ]
-  }
+    }
 }

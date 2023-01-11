@@ -133,8 +133,11 @@ private extension AbstractTarget {
 extension AbstractTarget {
     func dependencyLabels(projectRoot: Path) -> [String] {
         dependencies.map { dependency in
-            let dependencyRelativePath = dependency.path.relative(to: projectRoot)
-            let prefix = dependencyRelativePath.string == "." ? "" : "//\(dependencyRelativePath.string)"
+            let dependencyRelativePath = dependency.path.relative(from: projectRoot)
+            let isTargetRootSameAsProjectRoot = path == projectRoot
+            let isDependencyAtRoot = dependencyRelativePath.string == "."
+
+            let prefix = dependencyRelativePath.string == "." ? "//" : "//\(dependencyRelativePath.string)"
             return "\(prefix):\(dependency.name)"
         }
     }
@@ -154,7 +157,7 @@ extension AbstractTarget {
         resources.map { resourceFile in
             resourceFile.path.isAbsolute ? resourceFile.path : (projectRoot + resourceFile.path)
         }.map { resourcePath in
-            resourcePath.relative(to: normalizedTargetRootPath(projectRoot: projectRoot)).string
+            resourcePath.relative(from: normalizedTargetRootPath(projectRoot: projectRoot)).string
         }
     }
 
@@ -166,7 +169,7 @@ extension AbstractTarget {
         sourceFiles.map { sourceFile in
             sourceFile.path.isAbsolute ? sourceFile.path : (projectRoot + sourceFile.path)
         }.map { sourcePath in
-            sourcePath.relative(to: normalizedTargetRootPath(projectRoot: projectRoot)).string
+            sourcePath.relative(from: normalizedTargetRootPath(projectRoot: projectRoot)).string
         }
     }
 }

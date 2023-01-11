@@ -12,7 +12,7 @@
 import PathKit
 
 public extension Path {
-    func relative(to path: Path) -> Path {
+    func relative(from path: Path) -> Path {
         let pathComponents = path.components
         let selfComponents = components
 

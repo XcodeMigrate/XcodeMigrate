@@ -1,0 +1,19 @@
+load("@build_bazel_rules_apple//apple:ios.bzl", "ios_unit_test")
+load("@build_bazel_rules_swift//swift:swift.bzl", "swift_test")
+
+ios_unit_test(
+    name = "BasicFixtureProjectKitTests",
+    data = [],
+    env = {},
+    minimum_os_version = "13.0",
+    platform_type = "iphone",
+    deps = [":BasicFixtureProjectKitTests_source"],
+)
+
+swift_test(
+    name = "BasicFixtureProjectKitTests_source",
+    srcs = ["BasicFixtureProjectKitTests.swift"],
+    module_name = "BasicFixtureProjectKitTests",
+    visibility = ["//visibility:public"],
+    deps = ["//Targets/BasicFixtureProjectKit/Sources:BasicFixtureProjectKit_lib"],
+)
