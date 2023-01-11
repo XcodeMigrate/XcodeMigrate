@@ -22,6 +22,13 @@ extension BazelRule {
                 .attr(key: "deps", value: deps.sorted())
                 .attr(key: "module_name", value: moduleName)
                 .attr(key: "visibility", value: ["//visibility:public"])
+        case let .swiftTest(name, srcs, deps, moduleName):
+            return Rule(name: "swift_test")
+                .attr(key: "name", value: name)
+                .attr(key: "srcs", value: srcs)
+                .attr(key: "deps", value: deps.sorted())
+                .attr(key: "module_name", value: moduleName)
+                .attr(key: "visibility", value: ["//visibility:public"])
         case let .iosApplication(name, deps, bundleID, infoplists, minimumOSVersion, deviceFamilies, resources):
             return Rule(name: "ios_application")
                 .attr(key: "name", value: name)
@@ -41,16 +48,19 @@ extension BazelRule {
                 .attr(key: "visibility", value: ["//visibility:public"])
                 .attr(key: "deps", value: deps.sorted())
                 .attr(key: "resources", value: resources)
-        case let .iosUnitTest(name, data, deps, env, platformType, runner, testFilter, testHost):
+        case let .iosUnitTest(name, data, deps, minimumOSVersion, env, platformType, runner, testFilter, testHost):
             return Rule(name: "ios_unit_test")
                 .attr(key: "name", value: name)
                 .attr(key: "data", value: data)
                 .attr(key: "deps", value: deps.sorted())
+                .attr(key: "minimum_os_version", value: minimumOSVersion)
                 .attr(key: "env", value: env)
                 .attr(key: "platform_type", value: platformType.rawValue)
-                .attr(key: "runner", value: runner)
-                .attr(key: "test_filter", value: testFilter)
-                .attr(key: "test_host", value: testHost)
+
+        // TODO: Add support for runner, test_filter, and test_host
+        // .attr(key: "runner", value: runner)
+        // .attr(key: "test_filter", value: testFilter)
+        // .attr(key: "test_host", value: testHost)
         case let .filegroup(name, srcs):
             return Rule(name: "filegroup")
                 .attr(key: "name", value: name)

@@ -31,6 +31,10 @@ extension AbstractTarget {
             throw FindTargetRootPathError.noneFile
         }
 
+        if fullPaths.count == 1 {
+            return Path(fullPaths[0]).parent()
+        }
+
         let commonPrefix = String.commonPrefix(strings: fullPaths)
 
         if commonPrefix == fullPaths[0], let targetNameIndex = commonPrefix.index(of: target.name) {

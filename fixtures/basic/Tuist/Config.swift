@@ -13,6 +13,6 @@ import ProjectDescription
 
 let config = Config(
     plugins: [
-        .local(path: .relativeToManifest("../../Plugins/BasicFixtureProject")),
+        .local(path: .relativeToManifest("../../Plugins/BasicFixtureProject"))
     ]
 )

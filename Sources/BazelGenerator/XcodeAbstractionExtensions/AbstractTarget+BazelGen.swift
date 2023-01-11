@@ -30,14 +30,12 @@ enum BazelGeneratorAbstractTargetError: Error {
 }
 
 extension AbstractTarget {
-    func buildFilePath(projectRoot: Path) -> Path {
-        let buildFilePath = path + "BUILD.bazel"
-        guard !buildFilePath.isAbsolute else {
-            return buildFilePath
+    func buildFilePath(projectRoot _: Path) -> Path {
+        if !path.isAbsolute {
+            fatalError("not absolute target path: \(path)")
         }
-
-        let normalizedBuildFilePath = projectRoot + buildFilePath
-        return normalizedBuildFilePath
+        let buildFilePath = path + "BUILD.bazel"
+        return buildFilePath
     }
 }
 
